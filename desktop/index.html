@@ -74,10 +74,10 @@
       }
 
       .gradient-btn {
-        background: linear-gradient(90deg, #ff3300 0%, #0e09ff 100%);
+        background: linear-gradient(90deg, #ff633d 0%, #0e09ff 100%);
       }
       .gradient-btn-reverse {
-        background: linear-gradient(90deg, #0e09ff 0%, #ff3300 100%);
+        background: linear-gradient(90deg, #0e09ff 0%, #ff633d 100%);
       }
       .gradient-border {
         position: relative;
@@ -88,7 +88,7 @@
         inset: 0;
         border-radius: 12px;
         padding: 1px;
-        background: linear-gradient(90deg, #ff3300 0%, #0e09ff 100%);
+        background: linear-gradient(90deg, #ff633d 0%, #0e09ff 100%);
         -webkit-mask:
           linear-gradient(#fff 0 0) content-box,
           linear-gradient(#fff 0 0);
@@ -121,7 +121,6 @@
       }
 
       .hero-header {
-        position: relative;
         width: 300px;
         height: 82px;
         border-radius: 12px;
@@ -136,47 +135,45 @@
         <div class="w-full h-screen bg-black/5 rounded-sm">Main content</div>
       </main>
 
-      <aside class="w-[300px] h-[200px] bg-black/5">
+      <aside class="w-[300px]">
         <!-- Widget IMT -->
         <section
           id="imt-widget"
-          class="w-[300px] bg-primary50 rounded-2xl pb-2.5 pt-0 flex flex-col items-center gap-4 mx-auto"
+          class="relative w-[300px] bg-primary50 rounded-2xl p-2 flex flex-col items-center gap-2"
           aria-label="Kalkulator IMT"
+          style="
+            background-image: url(./imt-widget-vector.svg);
+            background-repeat: no-repeat;
+            background-position: right top;
+            background-size: contain;
+            z-index: 0;
+          "
         >
+          <!--Brand title -->
+          <div
+            class="absolute right-0 top-0 bg-white rounded-[5px] px-2 py-1 shadow-btnsm flex items-center"
+          >
+            <img src="allianz-logo.svg" alt="Allianz" class="w-16" />
+          </div>
+
           <!-- Header Hero -->
-          <header class="hero-header self-stretch">
-            <div class="absolute inset-0">
+          <header class="w-full h-auto pt-6 pb-2 rounded-xl overflow-hidden">
+            <div class="flex items-center gap-2 z-10 h-full">
               <img
-                src="imt-widget-vector.svg"
+                src="./hero-people.svg"
                 alt=""
-                class="absolute w-full h-full object-cover"
+                class="w-[61px] h-[42px]"
                 aria-hidden="true"
               />
-            </div>
-            <img
-              src="hero-people.svg"
-              alt=""
-              class="absolute left-[13px] top-[29px] w-[61px] h-[42px]"
-              aria-hidden="true"
-            />
-            <div
-              class="absolute left-[82px] top-[23px] w-[202px] flex flex-col gap-0"
-            >
-              <h1 class="text-linkblue font-extrabold text-base leading-[36px]">
-                Kalkulator Kesehatan
-              </h1>
-              <p class="text-ink text-[11px] leading-[1.3em]">
-                Cek IMT &amp; Pilih Perlindungan terbaik
-              </p>
-            </div>
-            <div
-              class="absolute right-2 top-0 bg-white rounded-[5px] px-2 py-1 shadow-btnsm flex items-center"
-            >
-              <img
-                src="allianz-logo.svg"
-                alt="Allianz"
-                class="w-16 h-[15.87px]"
-              />
+
+              <div class="flex flex-col gap-0">
+                <h1 class="text-linkblue font-extrabold text-base">
+                  Kalkulator Kesehatan
+                </h1>
+                <p class="text-ink text-[11px] leading-[1.3em]">
+                  Cek IMT &amp; Pilih Perlindungan terbaik
+                </p>
+              </div>
             </div>
           </header>
 
@@ -186,7 +183,7 @@
             class="w-full flex flex-col items-center gap-4"
           >
             <!-- Title -->
-            <div class="flex items-center gap-[5px]">
+            <div class="flex items-center gap-[5px] self-start">
               <img
                 src="calculator-icon.svg"
                 alt=""
@@ -201,7 +198,7 @@
             <!-- Form Inputs -->
             <form
               id="imt-form"
-              class="flex items-center gap-2 w-[280px]"
+              class="flex items-center gap-2 w-full"
               onSubmit="return false;"
             >
               <fieldset class="flex flex-col flex-1 min-w-0">
@@ -292,7 +289,7 @@
             id="imt-loading"
             class="hidden w-full flex flex-col items-center gap-4"
           >
-            <div class="flex items-center gap-[5px]">
+            <div class="flex items-center self-start gap-[5px]">
               <img
                 src="calculator-icon.svg"
                 alt=""
@@ -374,7 +371,7 @@
             class="hidden w-full flex flex-col items-center gap-4"
           >
             <!-- Title -->
-            <div class="flex items-center gap-[5px]">
+            <div class="flex items-center self-start gap-[5px]">
               <img
                 src="calculator-icon.svg"
                 alt=""
@@ -498,7 +495,7 @@
                 <div
                   class="flex-1 bg-white border border-strokeblue rounded-lg p-2 flex flex-col gap-2.5"
                 >
-                  <div class="flex items-center gap-2">
+                  <div class="flex items-center gap-1">
                     <div
                       class="w-7 h-7 flex items-center justify-center bg-soft rounded-[5.6px]"
                     >
@@ -525,9 +522,9 @@
                 <div
                   class="flex-1 bg-white border border-strokeblue rounded-lg p-2 flex flex-col gap-2.5"
                 >
-                  <div class="flex items-center gap-2">
+                  <div class="flex items-center gap-1">
                     <div
-                      class="w-7 h-7 flex items-center justify-center bg-primary-100 rounded-[5.6px]"
+                      class="w-7 h-7 flex items-center justify-center bg-primary-100 rounded-[5.6px] bg-primary50"
                     >
                       <img
                         src="flame-icon.svg"
