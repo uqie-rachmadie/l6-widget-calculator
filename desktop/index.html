@@ -120,11 +120,8 @@
         animation: spin 0.8s linear infinite;
       }
 
-      .hero-header {
-        width: 300px;
-        height: 82px;
-        border-radius: 12px;
-        overflow: hidden;
+      .input-field {
+        transition: border-color 0.2s;
       }
     </style>
   </head>
@@ -149,7 +146,7 @@
             z-index: 0;
           "
         >
-          <!--Brand title -->
+          <!-- Brand title -->
           <div
             class="absolute right-0 top-0 bg-white rounded-[5px] px-2 py-1 shadow-btnsm flex items-center"
           >
@@ -165,7 +162,6 @@
                 class="w-[61px] h-[42px]"
                 aria-hidden="true"
               />
-
               <div class="flex flex-col gap-0">
                 <h1 class="text-linkblue font-extrabold text-base">
                   Kalkulator Kesehatan
@@ -177,11 +173,8 @@
             </div>
           </header>
 
-          <!-- Default State: Form -->
-          <div
-            id="imt-form-state"
-            class="w-full flex flex-col items-center gap-4"
-          >
+          <!-- Shared UI -->
+          <div class="w-full flex flex-col items-center gap-4">
             <!-- Title -->
             <div class="flex items-center gap-[5px] self-start">
               <img
@@ -208,11 +201,12 @@
                   Berat badan
                 </legend>
                 <div
-                  class="flex items-center justify-between h-[41px] px-3 bg-white border border-black/10 rounded-md"
+                  class="input-field flex items-center justify-between h-[41px] px-3 bg-white border border-black/10 rounded-md"
                 >
                   <input
                     type="number"
                     id="input-berat"
+                    value="80"
                     placeholder="0"
                     min="1"
                     max="300"
@@ -230,11 +224,12 @@
                   Tinggi badan
                 </legend>
                 <div
-                  class="flex items-center justify-between h-[41px] px-3 bg-white border border-black/10 rounded-md"
+                  class="input-field flex items-center justify-between h-[41px] px-3 bg-white border border-black/10 rounded-md"
                 >
                   <input
                     type="number"
                     id="input-tinggi"
+                    value="185"
                     placeholder="0"
                     min="1"
                     max="300"
@@ -252,11 +247,12 @@
                   Usia
                 </legend>
                 <div
-                  class="flex items-center justify-between h-[41px] px-3 bg-white border border-black/10 rounded-md"
+                  class="input-field flex items-center justify-between h-[41px] px-3 bg-white border border-black/10 rounded-md"
                 >
                   <input
                     type="number"
                     id="input-usia"
+                    value="50"
                     placeholder="0"
                     min="1"
                     max="120"
@@ -270,75 +266,24 @@
               </fieldset>
             </form>
 
-            <!-- Button Hitung -->
+            <!-- Button -->
             <button
-              id="btn-hitung"
+              id="btn-action"
               type="button"
               class="w-[280px] h-[41px] gradient-btn rounded-[7.5px] shadow-btn flex items-center justify-center cursor-pointer"
-              onclick="hitungIMT()"
             >
               <span
+                id="btn-label"
                 class="text-white font-semibold text-[15px] leading-4 text-center"
                 >Hitung IMT</span
               >
             </button>
-          </div>
 
-          <!-- Loading State -->
-          <div
-            id="imt-loading"
-            class="hidden w-full flex flex-col items-center gap-4"
-          >
-            <div class="flex items-center self-start gap-[5px]">
-              <img
-                src="calculator-icon.svg"
-                alt=""
-                class="w-4 h-4"
-                aria-hidden="true"
-              />
-              <h2 class="font-bold text-sm text-ink whitespace-nowrap">
-                Hitung IMT (Index Massa Tubuh)
-              </h2>
-            </div>
-
-            <div class="flex items-center gap-2 w-[280px]">
-              <div class="flex flex-col flex-1 min-w-0">
-                <div class="text-xs font-medium text-ink px-0 py-1">
-                  Berat badan
-                </div>
-                <div
-                  class="flex items-center justify-between h-[41px] px-3 bg-white border border-black/10 rounded-md"
-                >
-                  <span id="display-berat" class="text-sm text-ink"></span>
-                  <span class="text-sm text-defaultgray shrink-0 ml-1">kg</span>
-                </div>
-              </div>
-              <div class="flex flex-col flex-1 min-w-0">
-                <div class="text-xs font-medium text-ink px-0 py-1">
-                  Tinggi badan
-                </div>
-                <div
-                  class="flex items-center justify-between h-[41px] px-3 bg-white border border-black/10 rounded-md"
-                >
-                  <span id="display-tinggi" class="text-sm text-ink"></span>
-                  <span class="text-sm text-defaultgray shrink-0 ml-1">cm</span>
-                </div>
-              </div>
-              <div class="flex flex-col flex-1 min-w-0">
-                <div class="text-xs font-medium text-ink px-0 py-1">Usia</div>
-                <div
-                  class="flex items-center justify-between h-[41px] px-3 bg-white border border-black/10 rounded-md"
-                >
-                  <span id="display-usia" class="text-sm text-ink"></span>
-                  <span class="text-sm text-defaultgray shrink-0 ml-1"
-                    >Tahun</span
-                  >
-                </div>
-              </div>
-            </div>
-
-            <!-- Spinner -->
-            <div class="flex flex-col items-center gap-3 py-2">
+            <!-- Loading Spinner (hidden by default) -->
+            <div
+              id="loading-spinner"
+              class="hidden flex-col items-center gap-3 py-2"
+            >
               <svg
                 class="loading-spinner w-8 h-8"
                 viewBox="0 0 32 32"
@@ -363,94 +308,33 @@
                 >Menghitung IMT Anda...</span
               >
             </div>
-          </div>
 
-          <!-- Result State -->
-          <div
-            id="imt-result-state"
-            class="hidden w-full flex flex-col items-center gap-4"
-          >
-            <!-- Title -->
-            <div class="flex items-center self-start gap-[5px]">
-              <img
-                src="calculator-icon.svg"
-                alt=""
-                class="w-4 h-4"
-                aria-hidden="true"
-              />
-              <h2 class="font-bold text-sm text-ink whitespace-nowrap">
-                Hitung IMT (Index Massa Tubuh)
-              </h2>
-            </div>
-
-            <!-- Filled Inputs (read-only) -->
-            <div class="flex items-center gap-2 w-[280px]">
-              <div class="flex flex-col flex-1 min-w-0">
-                <div class="text-xs font-medium text-ink px-0 py-1">
-                  Berat badan
-                </div>
-                <div
-                  class="flex items-center justify-between h-[41px] px-3 bg-white border border-orange/30 rounded-md"
-                >
-                  <span id="result-berat" class="text-sm text-ink"></span>
-                  <span class="text-sm text-defaultgray shrink-0 ml-1">kg</span>
-                </div>
-              </div>
-              <div class="flex flex-col flex-1 min-w-0">
-                <div class="text-xs font-medium text-ink px-0 py-1">
-                  Tinggi badan
-                </div>
-                <div
-                  class="flex items-center justify-between h-[41px] px-3 bg-white border border-orange/30 rounded-md"
-                >
-                  <span id="result-tinggi" class="text-sm text-ink"></span>
-                  <span class="text-sm text-defaultgray shrink-0 ml-1">cm</span>
-                </div>
-              </div>
-              <div class="flex flex-col flex-1 min-w-0">
-                <div class="text-xs font-medium text-ink px-0 py-1">Usia</div>
-                <div
-                  class="flex items-center justify-between h-[41px] px-3 bg-white border border-orange/30 rounded-md"
-                >
-                  <span id="result-usia" class="text-sm text-ink"></span>
-                  <span class="text-sm text-defaultgray shrink-0 ml-1"
-                    >Tahun</span
-                  >
-                </div>
-              </div>
-            </div>
-
-            <!-- Result Card -->
+            <!-- Result Card (hidden by default) -->
             <article
               id="result-card"
-              class="w-[280px] bg-soft rounded-xl gradient-border p-4 pb-2.5 flex flex-col items-center gap-4 fade-in-up"
+              class="hidden w-[280px] bg-soft rounded-xl gradient-border p-4 pb-2.5 flex-col items-center gap-4"
             >
               <!-- Chart + Info -->
               <div class="flex items-end gap-4 w-full">
                 <!-- Chart Visual -->
                 <figure class="flex flex-col items-center gap-2">
                   <div class="relative w-[90px] h-[45px]">
-                    <!-- Green block (top-left) -->
                     <div
                       class="absolute left-0 top-0 w-[31.82px] h-[22.73px] bg-greenresult border-[1.8px] border-soft rounded-sm"
                     ></div>
-                    <!-- Yellow block (top-right) -->
                     <div
                       class="absolute left-[45px] top-0 w-[31.82px] h-[22.73px] bg-yellowresult border-[1.8px] border-soft rounded-sm"
                     ></div>
-                    <!-- Blue block (bottom-left) -->
                     <div
                       class="absolute left-0 top-[13.18px] w-[22.73px] h-[31.82px] bg-blueresult border-[1.8px] border-soft rounded-sm"
                     ></div>
-                    <!-- Red block (bottom-right) -->
                     <div
                       class="absolute left-[67.27px] top-[13.18px] w-[22.73px] h-[31.82px] bg-redresult border-[1.8px] border-soft rounded-sm"
                     ></div>
-                    <!-- Dark center indicator -->
                     <div
+                      id="chart-indicator"
                       class="absolute left-[32.43px] top-[7.26px] w-[11.73px] h-[13.93px] bg-bluebreaking rounded-[0.7px]"
                     ></div>
-                    <!-- IMT Value -->
                     <figcaption
                       class="absolute left-[20px] top-[20px] w-[50px] text-center font-bold text-lg leading-[1.6em] text-greenresult"
                       id="imt-value-chart"
@@ -524,7 +408,7 @@
                 >
                   <div class="flex items-center gap-1">
                     <div
-                      class="w-7 h-7 flex items-center justify-center bg-primary-100 rounded-[5.6px] bg-primary50"
+                      class="w-7 h-7 flex items-center justify-center bg-primary50 rounded-[5.6px]"
                     >
                       <img
                         src="flame-icon.svg"
@@ -547,24 +431,12 @@
               </div>
             </article>
 
-            <!-- Button Hitung Lagi -->
-            <button
-              id="btn-lagi"
-              type="button"
-              class="w-[280px] h-[41px] gradient-btn-reverse rounded-[7.5px] shadow-btn flex items-center justify-center cursor-pointer"
-              onclick="resetForm()"
-            >
-              <span
-                class="text-white font-semibold text-[15px] leading-4 text-center"
-                >Hitung IMT Lagi</span
-              >
-            </button>
-
-            <!-- Bottom Banner -->
+            <!-- Bottom Banner (hidden by default) -->
             <img
+              id="bottom-banner"
               src="bottom-banner.png"
               alt="Allianz Perlindungan"
-              class="w-[280px] h-[87px] object-fill rounded-[8.6px]"
+              class="hidden w-[280px] h-[87px] object-fill rounded-[8.6px]"
             />
           </div>
         </section>
@@ -572,25 +444,102 @@
     </div>
 
     <script>
-      const formState = document.getElementById("imt-form-state");
-      const loadingState = document.getElementById("imt-loading");
-      const resultState = document.getElementById("imt-result-state");
+      const $ = (id) => document.getElementById(id);
 
-      const inputBerat = document.getElementById("input-berat");
-      const inputTinggi = document.getElementById("input-tinggi");
-      const inputUsia = document.getElementById("input-usia");
+      const inputBerat = $("input-berat");
+      const inputTinggi = $("input-tinggi");
+      const inputUsia = $("input-usia");
+      const btnAction = $("btn-action");
+      const btnLabel = $("btn-label");
+      const loadingSpinner = $("loading-spinner");
+      const resultCard = $("result-card");
+      const bottomBanner = $("bottom-banner");
+      const inputFields = document.querySelectorAll(".input-field");
 
-      function showState(state) {
-        formState.classList.add("hidden");
-        loadingState.classList.add("hidden");
-        resultState.classList.add("hidden");
+      const CATEGORY_COLORS = {
+        Kurus: {
+          indicator: "#0A92FC",
+          text: "#0A92FC",
+          border: "border-yellowresult",
+          tagText: "text-yellowresult",
+        },
+        Normal: {
+          indicator: "#148440",
+          text: "#148440",
+          border: "border-greenresult",
+          tagText: "text-ink",
+        },
+        Gemuk: {
+          indicator: "#FBC723",
+          text: "#FBC723",
+          border: "border-orange",
+          tagText: "text-orange",
+        },
+        Obesitas: {
+          indicator: "#F91114",
+          text: "#F91114",
+          border: "border-redresult",
+          tagText: "text-redresult",
+        },
+      };
 
-        if (state === "form") formState.classList.remove("hidden");
-        else if (state === "loading") loadingState.classList.remove("hidden");
-        else if (state === "result") resultState.classList.remove("hidden");
+      const DESCRIPTIONS = {
+        Kurus:
+          "Berat badan Anda di bawah ideal. Perlu peningkatan asupan gizi.",
+        Normal: "Berat badan Anda Ideal. Pertahankan pola hidup sehat!",
+        Gemuk:
+          "Berat badan Anda berlebih. Perhatikan pola makan dan rutin berolahraga.",
+        Obesitas:
+          "Berat badan Anda masuk kategori obesitas. Konsultasikan dengan dokter.",
+      };
+
+      let currentState = "form"; // form | loading | result
+
+      function setState(state) {
+        currentState = state;
+
+        const isForm = state === "form";
+        const isLoading = state === "loading";
+        const isResult = state === "result";
+
+        // Inputs: editable in form, read-only in loading/result
+        inputBerat.readOnly = !isForm;
+        inputTinggi.readOnly = !isForm;
+        inputUsia.readOnly = !isForm;
+        inputFields.forEach((el) => {
+          el.style.borderColor = isResult
+            ? "rgba(255,51,0,0.3)"
+            : "rgba(0,0,0,0.1)";
+        });
+
+        // Button
+        if (isForm) {
+          btnAction.className =
+            "w-[280px] h-[41px] gradient-btn rounded-[7.5px] shadow-btn flex items-center justify-center cursor-pointer";
+          btnLabel.textContent = "Hitung IMT";
+        } else if (isResult) {
+          btnAction.className =
+            "w-[280px] h-[41px] gradient-btn-reverse rounded-[7.5px] shadow-btn flex items-center justify-center cursor-pointer";
+          btnLabel.textContent = "Hitung IMT Lagi";
+        }
+        btnAction.disabled = isLoading;
+
+        // Loading spinner
+        loadingSpinner.classList.toggle("hidden", !isLoading);
+        loadingSpinner.classList.toggle("flex", isLoading);
+
+        // Result card + banner
+        resultCard.classList.toggle("hidden", !isResult);
+        resultCard.classList.toggle("flex", isResult);
+        bottomBanner.classList.toggle("hidden", !isResult);
       }
 
       function hitungIMT() {
+        if (currentState === "result") {
+          resetForm();
+          return;
+        }
+
         const berat = parseFloat(inputBerat.value);
         const tinggi = parseFloat(inputTinggi.value);
         const usia = parseInt(inputUsia.value);
@@ -607,14 +556,9 @@
           return;
         }
 
-        // Show loading with current values
-        document.getElementById("display-berat").textContent = berat;
-        document.getElementById("display-tinggi").textContent = tinggi;
-        document.getElementById("display-usia").textContent = usia;
-        showState("loading");
+        setState("loading");
 
-        // Simulate 2 second loading then show result
-        setTimeout(function () {
+        setTimeout(() => {
           calculateAndShow(berat, tinggi, usia);
         }, 2000);
       }
@@ -622,120 +566,65 @@
       function calculateAndShow(berat, tinggi, usia) {
         const tinggiMeter = tinggi / 100;
         const imt = berat / (tinggiMeter * tinggiMeter);
-
-        // Determine category
-        let kategori, tagColor, borderColor, desc;
-        if (imt < 18.5) {
-          kategori = "Kurus";
-          tagColor = "bg-yellowresult";
-          borderColor = "border-yellowresult";
-          desc =
-            "Berat badan Anda di bawah ideal. Perlu peningkatan asupan gizi.";
-        } else if (imt < 25) {
-          kategori = "Normal";
-          tagColor = "bg-greenresult";
-          borderColor = "border-greenresult";
-          desc = "Berat badan Anda Ideal. Pertahankan pola hidup sehat!";
-        } else if (imt < 30) {
-          kategori = "Gemuk";
-          tagColor = "bg-orange";
-          borderColor = "border-orange";
-          desc =
-            "Berat badan Anda berlebih. Perhatikan pola makan dan rutin berolahraga.";
-        } else {
-          kategori = "Obesitas";
-          tagColor = "bg-redresult";
-          borderColor = "border-redresult";
-          desc =
-            "Berat badan Anda masuk kategori obesitas. Konsultasikan dengan dokter.";
-        }
-
-        // IMT value with comma separator
         const imtStr = imt.toFixed(1).replace(".", ",");
 
-        // Fill result values
-        document.getElementById("result-berat").textContent = berat;
-        document.getElementById("result-tinggi").textContent = tinggi;
-        document.getElementById("result-usia").textContent = usia;
-        document.getElementById("imt-value-chart").textContent = imtStr;
+        let kategori;
+        if (imt < 18.5) kategori = "Kurus";
+        else if (imt < 25) kategori = "Normal";
+        else if (imt < 30) kategori = "Gemuk";
+        else kategori = "Obesitas";
+
+        const colors = CATEGORY_COLORS[kategori];
+
+        // IMT value
+        $("imt-value-chart").textContent = imtStr;
+        $("imt-value-chart").style.color = colors.text;
+
+        // Chart indicator
+        $("chart-indicator").style.backgroundColor = colors.indicator;
 
         // Tag
-        const tag = document.getElementById("imt-tag");
-        const tagText = document.getElementById("imt-tag-text");
+        const tag = $("imt-tag");
         tag.className =
           "inline-flex items-center gap-1 bg-white rounded-full pl-3 pr-2 py-1 border " +
-          borderColor;
-        tagText.textContent = kategori;
-
-        // Tag text color
-        if (kategori === "Normal") {
-          tagText.className = "text-xs font-medium text-ink";
-        } else if (kategori === "Kurus") {
-          tagText.className = "text-xs font-medium text-yellowresult";
-        } else if (kategori === "Gemuk") {
-          tagText.className = "text-xs font-medium text-orange";
-        } else {
-          tagText.className = "text-xs font-medium text-redresult";
-        }
+          colors.border;
+        $("imt-tag-text").textContent = kategori;
+        $("imt-tag-text").className = "text-xs font-medium " + colors.tagText;
 
         // Description
-        document.getElementById("imt-description").textContent = desc;
+        $("imt-description").textContent = DESCRIPTIONS[kategori];
 
-        // Berat ideal range
+        // Berat ideal
         const minIdeal = (18.5 * tinggiMeter * tinggiMeter)
           .toFixed(1)
           .replace(".", ",");
         const maxIdeal = (24.9 * tinggiMeter * tinggiMeter)
           .toFixed(1)
           .replace(".", ",");
-        document.getElementById("berat-ideal").textContent =
-          minIdeal + " - " + maxIdeal + " kg";
+        $("berat-ideal").textContent = minIdeal + " - " + maxIdeal + " kg";
 
-        // BMR (Mifflin-St Jeor for男性)
+        // BMR (Mifflin-St Jeor)
         const bmr = Math.round(10 * berat + 6.25 * tinggi - 5 * usia + 5);
-        document.getElementById("kalori-harian").textContent =
+        $("kalori-harian").textContent =
           "± " + bmr.toLocaleString("id-ID") + " kkal";
 
-        // Chart center indicator color based on category
-        const indicator = document.querySelector(".bg-bluebreaking");
-        if (kategori === "Normal") {
-          indicator.style.backgroundColor = "#148440";
-        } else if (kategori === "Kurus") {
-          indicator.style.backgroundColor = "#0A92FC";
-        } else if (kategori === "Gemuk") {
-          indicator.style.backgroundColor = "#FBC723";
-        } else {
-          indicator.style.backgroundColor = "#F91114";
-        }
-
-        // IMT value text color
-        const imtValueEl = document.getElementById("imt-value-chart");
-        if (kategori === "Normal") {
-          imtValueEl.style.color = "#148440";
-        } else if (kategori === "Kurus") {
-          imtValueEl.style.color = "#0A92FC";
-        } else if (kategori === "Gemuk") {
-          imtValueEl.style.color = "#FBC723";
-        } else {
-          imtValueEl.style.color = "#F91114";
-        }
-
-        // Reset animation
-        const resultCard = document.getElementById("result-card");
+        // Fade-in animation
         resultCard.classList.remove("fade-in-up");
-        void resultCard.offsetWidth; // trigger reflow
+        void resultCard.offsetWidth;
         resultCard.classList.add("fade-in-up");
 
-        showState("result");
+        setState("result");
       }
 
       function resetForm() {
         inputBerat.value = "";
         inputTinggi.value = "";
         inputUsia.value = "";
-        showState("form");
+        setState("form");
         inputBerat.focus();
       }
+
+      btnAction.addEventListener("click", hitungIMT);
     </script>
   </body>
 </html>
