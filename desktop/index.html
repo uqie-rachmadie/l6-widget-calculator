@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Jadwal Pertandingan - Liga Inggris</title>
+    <title>Widget IMT</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -14,7 +14,6 @@
     <script src="https://cdn.tailwindcss.com"></script>
 
     <script>
-      // Tailwind runtime config untuk token desain yang dipakai di halaman ini.
       tailwind.config = {
         theme: {
           extend: {
@@ -27,10 +26,21 @@
               soft: "#F6F8FF",
               line: "#E5EAF4",
               defaultgray: "#4f4f4f",
+              primary50: "#FFFBF7",
+              linkblue: "#0042A5",
+              bluebreaking: "#162456",
+              strokeblue: "rgba(0, 66, 165, 0.08)",
+              greenresult: "#4DE065",
+              redresult: "#F91114",
+              yellowresult: "#FBC723",
+              blueresult: "#0A92FC",
+              resulttext: "#364153",
             },
             boxShadow: {
               card: "0 1px 2px rgba(18, 35, 71, 0.03)",
               float: "0 12px 32px rgba(17, 24, 39, 0.12)",
+              btn: "0px 3px 7px -3px rgba(0,0,0,0.3), 0px 6px 12px -2px rgba(50,50,93,0.25)",
+              btnsm: "0px 1.9px 2.4px 0px rgba(0,0,0,0.04)",
             },
           },
         },
@@ -38,7 +48,6 @@
     </script>
 
     <style>
-      /* Base style dan helper kecil untuk halaman jadwal versi desktop. */
       html {
         scroll-behavior: smooth;
       }
@@ -53,69 +62,70 @@
         scrollbar-width: none;
       }
 
-      .league-card,
-      .date-pill,
-      .table-row {
-        transition: 160ms ease;
-      }
-
-      /* Hover hanya aktif di desktop karena filter liga berupa grid card. */
-      .league-card:hover {
-        transform: translateY(-1px);
-        background: #fff4ef !important;
-        border-color: #ff3b14 !important;
-      }
-
-      /* State terpilih diset dari JavaScript saat filter liga/tanggal berubah. */
-      .selected-league {
-        background: #fff4ef !important;
-        border-color: #ff3b14 !important;
-      }
-
-      .selected-date {
-        background: #030712 !important;
-        color: white !important;
-      }
-
-      .selected-date .date-sub {
-        color: #ffffff !important;
-      }
-      .calendar-date-disabled {
-        opacity: 0.35;
-        cursor: not-allowed;
-      }
-
-      .table-row:last-child {
-        border-bottom: 0;
-      }
-
-      .rank-line::before {
-        content: "";
-        position: absolute;
-        left: 10px;
-        top: 10px;
-        bottom: 10px;
-        width: 5px;
-        background: transparent;
-      }
-      .rank-line.top-zone::before {
-        background: #19c37d;
-      }
-      .rank-line.neutral-zone::before {
-        background: #ffad55;
-      }
-
-      /* Utility visibility bila file ini dipakai bersama elemen desktop/mobile tertentu. */
       @media (max-width: 767px) {
         .desktop-only {
           display: none;
         }
       }
-
       @media (min-width: 768px) {
         .mobile-only {
           display: none;
         }
+      }
+
+      .gradient-btn {
+        background: linear-gradient(90deg, #ff3300 0%, #0e09ff 100%);
+      }
+      .gradient-btn-reverse {
+        background: linear-gradient(90deg, #0e09ff 0%, #ff3300 100%);
+      }
+      .gradient-border {
+        position: relative;
+      }
+      .gradient-border::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: 12px;
+        padding: 1px;
+        background: linear-gradient(90deg, #ff3300 0%, #0e09ff 100%);
+        -webkit-mask:
+          linear-gradient(#fff 0 0) content-box,
+          linear-gradient(#fff 0 0);
+        -webkit-mask-composite: xor;
+        mask-composite: exclude;
+        pointer-events: none;
+      }
+
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(12px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .fade-in-up {
+        animation: fadeInUp 0.5s ease-out forwards;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+      .loading-spinner {
+        animation: spin 0.8s linear infinite;
+      }
+
+      .hero-header {
+        position: relative;
+        width: 300px;
+        height: 82px;
+        border-radius: 12px;
+        overflow: hidden;
       }
     </style>
   </head>
@@ -123,913 +133,612 @@
   <body class="bg-white text-ink font-sans antialiased">
     <div class="flex gap-5 mx-auto max-w-5xl px-5 py-7 md:px-8 md:py-10">
       <main class="max-w-[640px] flex-1">
-        <!-- Header utama halaman jadwal. -->
-        <header class="mb-7" aria-labelledby="page-title">
-          <div class="flex items-end justify-between gap-4">
-            <div>
-              <h1
-                id="page-title"
-                class="text-[30px] font-extrabold leading-none tracking-[-0.035em] md:text-[34px]"
-              >
-                Jadwal Pertandingan
-              </h1>
+        <div class="w-full h-screen bg-black/5 rounded-sm">Main content</div>
+      </main>
+
+      <aside class="w-[300px] h-[200px] bg-black/5">
+        <!-- Widget IMT -->
+        <section
+          id="imt-widget"
+          class="w-[300px] bg-primary50 rounded-2xl pb-2.5 pt-0 flex flex-col items-center gap-4 mx-auto"
+          aria-label="Kalkulator IMT"
+        >
+          <!-- Header Hero -->
+          <header class="hero-header self-stretch">
+            <div class="absolute inset-0">
+              <img
+                src="imt-widget-vector.svg"
+                alt=""
+                class="absolute w-full h-full object-cover"
+                aria-hidden="true"
+              />
             </div>
-          </div>
-        </header>
-
-        <!-- Filter liga dirender dari array leagueFilters di script. -->
-        <section aria-labelledby="league-filter-title" class="mb-7">
-          <h2 id="league-filter-title" class="sr-only">Filter liga</h2>
-          <div
-            id="league-filters"
-            class="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5"
-          ></div>
-        </section>
-
-        <!-- Navigasi tanggal: pill 7 hari, tombol maju/mundur, dan popup kalender. -->
-        <section class="relative mb-7" aria-labelledby="date-selector-title">
-          <h2 id="date-selector-title" class="sr-only">Pilih tanggal</h2>
-          <div class="flex items-stretch gap-2.5">
+            <img
+              src="hero-people.svg"
+              alt=""
+              class="absolute left-[13px] top-[29px] w-[61px] h-[42px]"
+              aria-hidden="true"
+            />
             <div
-              class="flex min-w-0 flex-1 items-center overflow-hidden rounded-lg border border-line bg-white shadow-card"
+              class="absolute left-[82px] top-[23px] w-[202px] flex flex-col gap-0"
             >
-              <button
-                id="prev-days"
-                type="button"
-                aria-label="Hari sebelumnya"
-                class="flex h-full w-11 shrink-0 items-center justify-center text-gray-500 transition hover:bg-gray-50 hover:text-ink"
-              >
-                <svg
-                  viewBox="0 0 24 24"
-                  class="h-5 w-5 rotate-180"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    d="m9 5 7 7-7 7"
-                  />
-                </svg>
-              </button>
+              <h1 class="text-linkblue font-extrabold text-base leading-[36px]">
+                Kalkulator Kesehatan
+              </h1>
+              <p class="text-ink text-[11px] leading-[1.3em]">
+                Cek IMT &amp; Pilih Perlindungan terbaik
+              </p>
+            </div>
+            <div
+              class="absolute right-2 top-0 bg-white rounded-[5px] px-2 py-1 shadow-btnsm flex items-center"
+            >
+              <img
+                src="allianz-logo.svg"
+                alt="Allianz"
+                class="w-16 h-[15.87px]"
+              />
+            </div>
+          </header>
 
-              <div
-                id="date-pills-container"
-                class="no-scrollbar flex min-w-0 flex-1 items-stretch justify-center overflow-x-auto"
-              ></div>
-
-              <button
-                id="next-days"
-                type="button"
-                aria-label="Hari berikutnya"
-                class="flex h-full w-11 shrink-0 items-center justify-center text-gray-500 transition hover:bg-gray-50 hover:text-ink"
-              >
-                <svg
-                  viewBox="0 0 24 24"
-                  class="h-5 w-5"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    d="m9 5 7 7-7 7"
-                  />
-                </svg>
-              </button>
+          <!-- Default State: Form -->
+          <div
+            id="imt-form-state"
+            class="w-full flex flex-col items-center gap-4"
+          >
+            <!-- Title -->
+            <div class="flex items-center gap-[5px]">
+              <img
+                src="calculator-icon.svg"
+                alt=""
+                class="w-4 h-4"
+                aria-hidden="true"
+              />
+              <h2 class="font-bold text-sm text-ink whitespace-nowrap">
+                Hitung IMT (Index Massa Tubuh)
+              </h2>
             </div>
 
-            <button
-              id="calendar-toggle-btn"
-              type="button"
-              title="Buka kalender"
-              aria-haspopup="dialog"
-              aria-controls="calendar-dropdown"
-              aria-expanded="false"
-              class="flex w-14 shrink-0 items-center justify-center rounded-lg border border-line bg-white text-ink shadow-card transition hover:bg-gray-50"
+            <!-- Form Inputs -->
+            <form
+              id="imt-form"
+              class="flex items-center gap-2 w-[280px]"
+              onSubmit="return false;"
             >
-              <svg
-                viewBox="0 0 24 24"
-                class="h-[19px] w-[19px]"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="1.9"
+              <fieldset class="flex flex-col flex-1 min-w-0">
+                <legend
+                  class="text-xs font-medium text-ink px-0 py-1 whitespace-nowrap"
+                >
+                  Berat badan
+                </legend>
+                <div
+                  class="flex items-center justify-between h-[41px] px-3 bg-white border border-black/10 rounded-md"
+                >
+                  <input
+                    type="number"
+                    id="input-berat"
+                    placeholder="0"
+                    min="1"
+                    max="300"
+                    required
+                    class="w-full text-sm text-ink placeholder-defaultgray outline-none bg-transparent [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                  />
+                  <span class="text-sm text-defaultgray shrink-0 ml-1">kg</span>
+                </div>
+              </fieldset>
+
+              <fieldset class="flex flex-col flex-1 min-w-0">
+                <legend
+                  class="text-xs font-medium text-ink px-0 py-1 whitespace-nowrap"
+                >
+                  Tinggi badan
+                </legend>
+                <div
+                  class="flex items-center justify-between h-[41px] px-3 bg-white border border-black/10 rounded-md"
+                >
+                  <input
+                    type="number"
+                    id="input-tinggi"
+                    placeholder="0"
+                    min="1"
+                    max="300"
+                    required
+                    class="w-full text-sm text-ink placeholder-defaultgray outline-none bg-transparent [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                  />
+                  <span class="text-sm text-defaultgray shrink-0 ml-1">cm</span>
+                </div>
+              </fieldset>
+
+              <fieldset class="flex flex-col flex-1 min-w-0">
+                <legend
+                  class="text-xs font-medium text-ink px-0 py-1 whitespace-nowrap"
+                >
+                  Usia
+                </legend>
+                <div
+                  class="flex items-center justify-between h-[41px] px-3 bg-white border border-black/10 rounded-md"
+                >
+                  <input
+                    type="number"
+                    id="input-usia"
+                    placeholder="0"
+                    min="1"
+                    max="120"
+                    required
+                    class="w-full text-sm text-ink placeholder-defaultgray outline-none bg-transparent [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                  />
+                  <span class="text-sm text-defaultgray shrink-0 ml-1"
+                    >Tahun</span
+                  >
+                </div>
+              </fieldset>
+            </form>
+
+            <!-- Button Hitung -->
+            <button
+              id="btn-hitung"
+              type="button"
+              class="w-[280px] h-[41px] gradient-btn rounded-[7.5px] shadow-btn flex items-center justify-center cursor-pointer"
+              onclick="hitungIMT()"
+            >
+              <span
+                class="text-white font-semibold text-[15px] leading-4 text-center"
+                >Hitung IMT</span
               >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M8 3v4M16 3v4M4.5 9.5h15M6 5h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2Z"
-                />
-              </svg>
             </button>
           </div>
 
-          <!-- Popup kalender dibuat ulang setiap bulan/tanggal berubah. -->
+          <!-- Loading State -->
           <div
-            id="calendar-dropdown"
-            role="dialog"
-            aria-label="Kalender pertandingan"
-            aria-hidden="true"
-            class="absolute right-0 top-[58px] z-50 hidden w-[330px] rounded-2xl border border-line bg-white p-4 shadow-float"
+            id="imt-loading"
+            class="hidden w-full flex flex-col items-center gap-4"
           >
-            <div
-              class="mb-3 flex items-center justify-between border-b border-gray-100 pb-3"
-            >
-              <button
-                id="cal-prev-month"
-                type="button"
-                class="rounded-lg p-2 hover:bg-gray-100"
-              >
-                <svg
-                  viewBox="0 0 24 24"
-                  class="h-4 w-4 rotate-180"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    d="m9 5 7 7-7 7"
-                  />
-                </svg>
-              </button>
-              <span id="cal-month-year" class="text-sm font-bold"></span>
-              <button
-                id="cal-next-month"
-                type="button"
-                class="rounded-lg p-2 hover:bg-gray-100"
-              >
-                <svg
-                  viewBox="0 0 24 24"
-                  class="h-4 w-4"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    d="m9 5 7 7-7 7"
-                  />
-                </svg>
-              </button>
-            </div>
-
-            <div
-              class="mb-2 grid grid-cols-7 gap-1 text-center text-[11px] font-bold text-gray-500"
-            >
-              <div>Min</div>
-              <div>Sen</div>
-              <div>Sel</div>
-              <div>Rab</div>
-              <div>Kam</div>
-              <div>Jum</div>
-              <div>Sab</div>
-            </div>
-            <div
-              id="cal-days-grid"
-              class="grid grid-cols-7 gap-1 text-center text-xs"
-            ></div>
-          </div>
-        </section>
-
-        <!-- Container hasil render jadwal pertandingan per tanggal dan liga. -->
-        <section aria-labelledby="matches-title">
-          <h2 id="matches-title" class="sr-only">Jadwal pertandingan</h2>
-          <div
-            id="match-content-container"
-            class="space-y-5"
-            aria-live="polite"
-            aria-atomic="true"
-          ></div>
-        </section>
-
-        <!-- Tabel klasemen dirender dari data standings. -->
-        <section class="mt-10" aria-labelledby="standings-heading">
-          <div class="mb-4 flex items-center justify-between gap-4">
-            <div>
-              <h2
-                id="standings-heading"
-                class="mt-1 text-lg font-extrabold tracking-[-0.02em]"
-              >
-                Klasemen Liga Inggris
+            <div class="flex items-center gap-[5px]">
+              <img
+                src="calculator-icon.svg"
+                alt=""
+                class="w-4 h-4"
+                aria-hidden="true"
+              />
+              <h2 class="font-bold text-sm text-ink whitespace-nowrap">
+                Hitung IMT (Index Massa Tubuh)
               </h2>
             </div>
-            <a
-              href="#"
-              aria-label="Lihat klasemen lengkap"
-              class="shrink-0 text-base font-medium text-[#0042A5] hover:underline"
-              >Selengkapnya ›</a
-            >
-          </div>
 
-          <div
-            class="overflow-hidden rounded-xl border border-line bg-white shadow-card"
-          >
-            <div class="overflow-x-hidden">
-              <table class="max-w-[720px] w-full border-collapse">
-                <caption class="sr-only">
-                  Klasemen Liga Inggris
-                </caption>
-                <thead class="bg-soft">
-                  <tr
-                    class="border-b border-line text-xs font-bold text-defaultgray"
+            <div class="flex items-center gap-2 w-[280px]">
+              <div class="flex flex-col flex-1 min-w-0">
+                <div class="text-xs font-medium text-ink px-0 py-1">
+                  Berat badan
+                </div>
+                <div
+                  class="flex items-center justify-between h-[41px] px-3 bg-white border border-black/10 rounded-md"
+                >
+                  <span id="display-berat" class="text-sm text-ink"></span>
+                  <span class="text-sm text-defaultgray shrink-0 ml-1">kg</span>
+                </div>
+              </div>
+              <div class="flex flex-col flex-1 min-w-0">
+                <div class="text-xs font-medium text-ink px-0 py-1">
+                  Tinggi badan
+                </div>
+                <div
+                  class="flex items-center justify-between h-[41px] px-3 bg-white border border-black/10 rounded-md"
+                >
+                  <span id="display-tinggi" class="text-sm text-ink"></span>
+                  <span class="text-sm text-defaultgray shrink-0 ml-1">cm</span>
+                </div>
+              </div>
+              <div class="flex flex-col flex-1 min-w-0">
+                <div class="text-xs font-medium text-ink px-0 py-1">Usia</div>
+                <div
+                  class="flex items-center justify-between h-[41px] px-3 bg-white border border-black/10 rounded-md"
+                >
+                  <span id="display-usia" class="text-sm text-ink"></span>
+                  <span class="text-sm text-defaultgray shrink-0 ml-1"
+                    >Tahun</span
                   >
-                    <th scope="col" class="w-12 px-4 py-3 text-left">Pos</th>
-                    <th scope="col" class="px-2 py-3 text-left">Klub</th>
-                    <th scope="col" class="w-12 px-2 py-3 text-center">Main</th>
-                    <th scope="col" class="w-12 px-2 py-3 text-center">
-                      Menang
-                    </th>
-                    <th scope="col" class="w-12 px-2 py-3 text-center">Seri</th>
-                    <th scope="col" class="w-12 px-2 py-3 text-center">
-                      Kalah
-                    </th>
-                    <th scope="col" class="w-12 px-2 py-3 text-center">Gol</th>
-                    <th scope="col" class="w-12 px-2 py-3 text-center">+/-</th>
-                    <th scope="col" class="w-12 px-4 py-3 text-center">Poin</th>
-                  </tr>
-                </thead>
-                <tbody id="standings-body"></tbody>
-              </table>
+                </div>
+              </div>
+            </div>
+
+            <!-- Spinner -->
+            <div class="flex flex-col items-center gap-3 py-2">
+              <svg
+                class="loading-spinner w-8 h-8"
+                viewBox="0 0 32 32"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <circle
+                  cx="16"
+                  cy="16"
+                  r="14"
+                  stroke="#E5EAF4"
+                  stroke-width="3"
+                />
+                <path
+                  d="M16 2a14 14 0 0 1 14 14"
+                  stroke="#FF3B14"
+                  stroke-width="3"
+                  stroke-linecap="round"
+                />
+              </svg>
+              <span class="text-xs text-defaultgray"
+                >Menghitung IMT Anda...</span
+              >
             </div>
           </div>
-        </section>
 
-        <!-- Tabel top skor dirender dari data scorers. -->
-        <section class="mt-10" aria-labelledby="scorers-heading">
-          <div class="mb-4 flex items-center justify-between gap-4">
-            <div>
-              <h2
-                id="scorers-heading"
-                class="mt-1 text-lg font-extrabold tracking-[-0.02em]"
-              >
-                Top Skor Liga Inggris
+          <!-- Result State -->
+          <div
+            id="imt-result-state"
+            class="hidden w-full flex flex-col items-center gap-4"
+          >
+            <!-- Title -->
+            <div class="flex items-center gap-[5px]">
+              <img
+                src="calculator-icon.svg"
+                alt=""
+                class="w-4 h-4"
+                aria-hidden="true"
+              />
+              <h2 class="font-bold text-sm text-ink whitespace-nowrap">
+                Hitung IMT (Index Massa Tubuh)
               </h2>
             </div>
-            <a
-              href="#"
-              aria-label="Lihat top skor lengkap"
-              class="shrink-0 text-base font-medium text-[#0042A5] hover:underline"
-              >Selengkapnya ›</a
-            >
-          </div>
 
-          <div
-            class="overflow-hidden rounded-xl border border-line bg-white shadow-card"
-          >
-            <div class="overflow-x-auto">
-              <table class="min-w-[620px] w-full border-collapse">
-                <caption class="sr-only">
-                  Top skor Liga Inggris
-                </caption>
-                <thead class="bg-soft">
-                  <tr
-                    class="border-b border-line text-xs font-bold text-defaultgray"
+            <!-- Filled Inputs (read-only) -->
+            <div class="flex items-center gap-2 w-[280px]">
+              <div class="flex flex-col flex-1 min-w-0">
+                <div class="text-xs font-medium text-ink px-0 py-1">
+                  Berat badan
+                </div>
+                <div
+                  class="flex items-center justify-between h-[41px] px-3 bg-white border border-orange/30 rounded-md"
+                >
+                  <span id="result-berat" class="text-sm text-ink"></span>
+                  <span class="text-sm text-defaultgray shrink-0 ml-1">kg</span>
+                </div>
+              </div>
+              <div class="flex flex-col flex-1 min-w-0">
+                <div class="text-xs font-medium text-ink px-0 py-1">
+                  Tinggi badan
+                </div>
+                <div
+                  class="flex items-center justify-between h-[41px] px-3 bg-white border border-orange/30 rounded-md"
+                >
+                  <span id="result-tinggi" class="text-sm text-ink"></span>
+                  <span class="text-sm text-defaultgray shrink-0 ml-1">cm</span>
+                </div>
+              </div>
+              <div class="flex flex-col flex-1 min-w-0">
+                <div class="text-xs font-medium text-ink px-0 py-1">Usia</div>
+                <div
+                  class="flex items-center justify-between h-[41px] px-3 bg-white border border-orange/30 rounded-md"
+                >
+                  <span id="result-usia" class="text-sm text-ink"></span>
+                  <span class="text-sm text-defaultgray shrink-0 ml-1"
+                    >Tahun</span
                   >
-                    <th scope="col" class="w-16 px-4 py-3 text-center">Pos</th>
-                    <th scope="col" class="px-2 py-3 text-left">Pemain</th>
-                    <th scope="col" class="w-24 px-4 py-3 text-center">Gol</th>
-                    <th scope="col" class="w-24 px-4 py-3 text-center">
-                      Penalti
-                    </th>
-                    <th scope="col" class="w-24 px-4 py-3 text-center">
-                      Assist
-                    </th>
-                  </tr>
-                </thead>
-                <tbody id="scorers-body"></tbody>
-              </table>
+                </div>
+              </div>
             </div>
+
+            <!-- Result Card -->
+            <article
+              id="result-card"
+              class="w-[280px] bg-soft rounded-xl gradient-border p-4 pb-2.5 flex flex-col items-center gap-4 fade-in-up"
+            >
+              <!-- Chart + Info -->
+              <div class="flex items-end gap-4 w-full">
+                <!-- Chart Visual -->
+                <figure class="flex flex-col items-center gap-2">
+                  <div class="relative w-[90px] h-[45px]">
+                    <!-- Green block (top-left) -->
+                    <div
+                      class="absolute left-0 top-0 w-[31.82px] h-[22.73px] bg-greenresult border-[1.8px] border-soft rounded-sm"
+                    ></div>
+                    <!-- Yellow block (top-right) -->
+                    <div
+                      class="absolute left-[45px] top-0 w-[31.82px] h-[22.73px] bg-yellowresult border-[1.8px] border-soft rounded-sm"
+                    ></div>
+                    <!-- Blue block (bottom-left) -->
+                    <div
+                      class="absolute left-0 top-[13.18px] w-[22.73px] h-[31.82px] bg-blueresult border-[1.8px] border-soft rounded-sm"
+                    ></div>
+                    <!-- Red block (bottom-right) -->
+                    <div
+                      class="absolute left-[67.27px] top-[13.18px] w-[22.73px] h-[31.82px] bg-redresult border-[1.8px] border-soft rounded-sm"
+                    ></div>
+                    <!-- Dark center indicator -->
+                    <div
+                      class="absolute left-[32.43px] top-[7.26px] w-[11.73px] h-[13.93px] bg-bluebreaking rounded-[0.7px]"
+                    ></div>
+                    <!-- IMT Value -->
+                    <figcaption
+                      class="absolute left-[20px] top-[20px] w-[50px] text-center font-bold text-lg leading-[1.6em] text-greenresult"
+                      id="imt-value-chart"
+                    >
+                      24,2
+                    </figcaption>
+                  </div>
+                  <!-- Tag Status -->
+                  <div
+                    id="imt-tag"
+                    class="inline-flex items-center gap-1 bg-white border border-greenresult rounded-full pl-3 pr-2 py-1"
+                  >
+                    <span id="imt-tag-text" class="text-xs font-medium text-ink"
+                      >Normal</span
+                    >
+                    <img
+                      src="check-icon.svg"
+                      alt=""
+                      class="w-4 h-4"
+                      aria-hidden="true"
+                    />
+                  </div>
+                </figure>
+
+                <!-- Result Description -->
+                <div class="flex flex-col justify-end flex-1 gap-0.5">
+                  <h3 class="font-bold text-sm text-resulttext leading-[1.6em]">
+                    Hasil IMT Anda
+                  </h3>
+                  <p
+                    id="imt-description"
+                    class="text-xs text-ink leading-[1.6em]"
+                  >
+                    Berat badan Anda Ideal. Pertahankan pola hidup sehat!
+                  </p>
+                </div>
+              </div>
+
+              <!-- Info Boxes -->
+              <div class="flex gap-2 w-[260px]">
+                <!-- Berat Ideal -->
+                <div
+                  class="flex-1 bg-white border border-strokeblue rounded-lg p-2 flex flex-col gap-2.5"
+                >
+                  <div class="flex items-center gap-2">
+                    <div
+                      class="w-7 h-7 flex items-center justify-center bg-soft rounded-[5.6px]"
+                    >
+                      <img
+                        src="weight-icon.svg"
+                        alt=""
+                        class="w-[13.97px] h-[13.3px]"
+                        aria-hidden="true"
+                      />
+                    </div>
+                    <span class="text-[11px] text-linkblue leading-[1.3em]"
+                      >Berat Ideal<br />Anda</span
+                    >
+                  </div>
+                  <p
+                    id="berat-ideal"
+                    class="text-sm font-bold text-ink text-center"
+                  >
+                    53,5 - 72,1 kg
+                  </p>
+                </div>
+
+                <!-- Kalori Harian -->
+                <div
+                  class="flex-1 bg-white border border-strokeblue rounded-lg p-2 flex flex-col gap-2.5"
+                >
+                  <div class="flex items-center gap-2">
+                    <div
+                      class="w-7 h-7 flex items-center justify-center bg-primary-100 rounded-[5.6px]"
+                    >
+                      <img
+                        src="flame-icon.svg"
+                        alt=""
+                        class="w-[9.8px] h-[13.3px]"
+                        aria-hidden="true"
+                      />
+                    </div>
+                    <span class="text-[11px] text-orange leading-[1.3em]"
+                      >Kalori Harian<br />(BMR)</span
+                    >
+                  </div>
+                  <p
+                    id="kalori-harian"
+                    class="text-sm font-bold text-ink text-center"
+                  >
+                    ± 1.650 kkal
+                  </p>
+                </div>
+              </div>
+            </article>
+
+            <!-- Button Hitung Lagi -->
+            <button
+              id="btn-lagi"
+              type="button"
+              class="w-[280px] h-[41px] gradient-btn-reverse rounded-[7.5px] shadow-btn flex items-center justify-center cursor-pointer"
+              onclick="resetForm()"
+            >
+              <span
+                class="text-white font-semibold text-[15px] leading-4 text-center"
+                >Hitung IMT Lagi</span
+              >
+            </button>
+
+            <!-- Bottom Banner -->
+            <img
+              src="bottom-banner.png"
+              alt="Allianz Perlindungan"
+              class="w-[280px] h-[87px] object-fill rounded-[8.6px]"
+            />
           </div>
         </section>
-      </main>
-
-      <!-- Placeholder area kanan untuk slot konten tambahan/iklan di desktop. -->
-      <aside class="w-[300px] h-[200px] bg-black/5"></aside>
+      </aside>
     </div>
 
     <script>
-      (() => {
-        "use strict";
+      const formState = document.getElementById("imt-form-state");
+      const loadingState = document.getElementById("imt-loading");
+      const resultState = document.getElementById("imt-result-state");
 
-        // Data filter liga. id dipakai untuk mencocokkan item di matchDatabase.
-        const leagueFilters = [
-          {
-            id: "semua",
-            name: "Semua Liga",
-            type: "grid",
-          },
-          {
-            id: "champions",
-            name: "Champions",
-            logo: "https://assets.football-logos.cc/logos/italy/1500x1500/serie-a.0e7a37ed.png",
-          },
-          {
-            id: "inggris",
-            name: "Inggris",
-            logo: "https://assets.football-logos.cc/logos/england/1500x1500/english-premier-league.4d68127f.png",
-          },
-          {
-            id: "spanyol",
-            name: "Spanyol",
-            logo: "https://assets.football-logos.cc/logos/italy/1500x1500/juventus.309408e0.png",
-          },
-          {
-            id: "italia",
-            name: "Italia",
-            logo: "https://assets.football-logos.cc/logos/italy/1500x1500/milan.6b4c62be.png",
-          },
-          {
-            id: "jerman",
-            name: "Jerman",
-            logo: "https://assets.football-logos.cc/logos/italy/1500x1500/inter.d4ebfb95.png",
-          },
-          {
-            id: "europa",
-            name: "Europa",
-            logo: "https://assets.football-logos.cc/logos/italy/1500x1500/napoli.3e57a185.png",
-          },
-          {
-            id: "konferensi",
-            name: "Konferensi Eropa",
-            logo: "https://assets.football-logos.cc/logos/italy/1500x1500/roma.90753835.png",
-          },
-          {
-            id: "prancis",
-            name: "Prancis",
-            logo: "https://assets.football-logos.cc/logos/italy/1500x1500/lazio.b6301260.png",
-          },
-          {
-            id: "belanda",
-            name: "Belanda",
-            logo: "https://assets.football-logos.cc/logos/italy/1500x1500/fiorentina.3a19a902.png",
-          },
-        ];
+      const inputBerat = document.getElementById("input-berat");
+      const inputTinggi = document.getElementById("input-tinggi");
+      const inputUsia = document.getElementById("input-usia");
 
-        // Lookup logo tim. Fallback logo dipakai saat nama tim tidak ada di mapping ini.
-        const teamLogo = {
-          Everton:
-            "https://assets.football-logos.cc/logos/england/1500x1500/everton.61ae3574.png",
-          "Aston Villa":
-            "https://assets.football-logos.cc/logos/england/1500x1500/aston-villa.5265a6b0.png",
-          "Leicester City":
-            "https://assets.football-logos.cc/logos/england/1500x1500/brentford.b03197ef.png",
-          Arsenal:
-            "https://assets.football-logos.cc/logos/england/1500x1500/arsenal.d4144b2a.png",
-          Liverpool:
-            "https://assets.football-logos.cc/logos/england/1500x1500/liverpool.d03fd250.png",
-          Tottenham:
-            "https://assets.football-logos.cc/logos/england/1500x1500/tottenham.b32501c6.png",
-          "Manchester City":
-            "https://assets.football-logos.cc/logos/england/1500x1500/manchester-city.8d2b6688.png",
-          "Manchester United":
-            "https://assets.football-logos.cc/logos/england/1500x1500/manchester-united.104c5aa9.png",
-          Leverkusen:
-            "https://assets.football-logos.cc/logos/england/1500x1500/newcastle.c19d66db.png",
-          Leipzig:
-            "https://assets.football-logos.cc/logos/england/1500x1500/arsenal.d4144b2a.png",
-          "Bayern Munchen":
-            "https://assets.football-logos.cc/logos/england/1500x1500/newcastle.c19d66db.png",
-          Dortmund:
-            "https://assets.football-logos.cc/logos/england/1500x1500/arsenal.d4144b2a.png",
-          Ajax: "https://assets.football-logos.cc/logos/england/1500x1500/everton.61ae3574.png",
-          Porto:
-            "https://assets.football-logos.cc/logos/england/1500x1500/aston-villa.5265a6b0.png",
-        };
+      function showState(state) {
+        formState.classList.add("hidden");
+        loadingState.classList.add("hidden");
+        resultState.classList.add("hidden");
 
-        // Data jadwal dummy per tanggal: [leagueId, homeTeam, awayTeam, scoreOrTime].
-        const matchDatabase = {
-          "2026-07-19": [
-            ["inggris", "Everton", "Aston Villa", "0 - 1"],
-            ["inggris", "Aston Villa", "Leicester City", "1 - 0"],
-            ["inggris", "Leicester City", "Arsenal", "1 - 1"],
-            ["inggris", "Arsenal", "Liverpool", "2 - 3"],
-            ["inggris", "Liverpool", "Tottenham", "0 - 4"],
-          ],
-          "2026-07-20": [
-            ["inggris", "Everton", "Aston Villa", "20:00"],
-            ["inggris", "Leicester City", "Arsenal", "21:00"],
-            ["spanyol", "Real Madrid", "Barcelona", "22:00"],
-          ],
-          "2026-07-21": [
-            ["italia", "Juventus", "AC Milan", "20:30"],
-            ["inggris", "Liverpool", "Tottenham", "01:30"],
-          ],
-          "2026-07-22": [["jerman", "Bayern Munchen", "Dortmund", "21:00"]],
-          "2026-07-23": [
-            ["champions", "Everton", "Aston Villa", "20:00"],
-            ["champions", "Leicester City", "Arsenal", "21:00"],
-            ["inggris", "Liverpool", "Tottenham", "01:30"],
-            ["spanyol", "Valencia", "Sevilla", "20:00"],
-            ["italia", "Inter Milan", "Napoli", "22:00"],
-          ],
-          "2026-07-24": [["jerman", "Leverkusen", "Leipzig", "19:30"]],
-          "2026-07-25": [["europa", "Ajax", "Porto", "21:00"]],
-          "2026-07-26": [
-            ["inggris", "Manchester City", "Manchester United", "17:00"],
-          ],
-        };
+        if (state === "form") formState.classList.remove("hidden");
+        else if (state === "loading") loadingState.classList.remove("hidden");
+        else if (state === "result") resultState.classList.remove("hidden");
+      }
 
-        // Data klasemen dan top skor sementara untuk mengisi tabel di bawah jadwal.
-        const standings = [
-          {
-            pos: 1,
-            club: "Arsenal",
-            played: 34,
-            win: 38,
-            draw: 73,
-            loss: 73,
-            goals: 73,
-            diff: 73,
-            points: 73,
-          },
-          {
-            pos: 2,
-            club: "Everton",
-            played: 33,
-            win: 37,
-            draw: 70,
-            loss: 70,
-            goals: 70,
-            diff: 70,
-            points: 70,
-          },
-          {
-            pos: 3,
-            club: "Aston Villa",
-            played: 34,
-            win: 14,
-            draw: 61,
-            loss: 61,
-            goals: 61,
-            diff: 61,
-            points: 61,
-          },
-          {
-            pos: 4,
-            club: "Leicester City",
-            played: 34,
-            win: 13,
-            draw: 58,
-            loss: 58,
-            goals: 58,
-            diff: 58,
-            points: 58,
-          },
-          {
-            pos: 5,
-            club: "Liverpool",
-            played: 34,
-            win: 5,
-            draw: 58,
-            loss: 58,
-            goals: 58,
-            diff: 58,
-            points: 58,
-          },
-        ];
+      function hitungIMT() {
+        const berat = parseFloat(inputBerat.value);
+        const tinggi = parseFloat(inputTinggi.value);
+        const usia = parseInt(inputUsia.value);
 
-        const scorers = [
-          {
-            pos: 1,
-            player: "Erling Haaland",
-            club: "Arsenal",
-            goals: 30,
-            pen: 1,
-            assist: 11,
-          },
-          {
-            pos: 2,
-            player: "Ivan Toney",
-            club: "Brentford",
-            goals: 25,
-            pen: 2,
-            assist: 11,
-          },
-          {
-            pos: 3,
-            player: "Rodrigo",
-            club: "Leeds",
-            goals: 21,
-            pen: 4,
-            assist: 7,
-          },
-          {
-            pos: 4,
-            player: "Roberti Firmino",
-            club: "Newcastle",
-            goals: 17,
-            pen: 4,
-            assist: 13,
-          },
-          {
-            pos: 5,
-            player: "Phil Foden",
-            club: "Liverpool",
-            goals: 16,
-            pen: 1,
-            assist: 4,
-          },
-        ];
-
-        const daysIndo = [
-          "Minggu",
-          "Senin",
-          "Selasa",
-          "Rabu",
-          "Kamis",
-          "Jumat",
-          "Sabtu",
-        ];
-        const monthsIndo = [
-          "Januari",
-          "Februari",
-          "Maret",
-          "April",
-          "Mei",
-          "Juni",
-          "Juli",
-          "Agustus",
-          "September",
-          "Oktober",
-          "November",
-          "Desember",
-        ];
-
-        // State halaman. currentDate dan selectedLeague menjadi sumber utama render.
-        let currentDate = new Date(2026, 6, 19);
-        let selectedLeague = "inggris";
-        let calendarDate = new Date(currentDate);
-
-        // Cache elemen DOM yang sering di-update supaya render function tetap ringkas.
-        const leagueFiltersEl = document.getElementById("league-filters");
-        const datePillsContainer = document.getElementById(
-          "date-pills-container",
-        );
-        const matchContentContainer = document.getElementById(
-          "match-content-container",
-        );
-        const calendarDropdown = document.getElementById("calendar-dropdown");
-        const calendarToggleBtn = document.getElementById(
-          "calendar-toggle-btn",
-        );
-        const calMonthYear = document.getElementById("cal-month-year");
-        const calDaysGrid = document.getElementById("cal-days-grid");
-        const standingsBody = document.getElementById("standings-body");
-        const scorersBody = document.getElementById("scorers-body");
-        const syncCalendarState = (isVisible) => {
-          calendarToggleBtn.setAttribute("aria-expanded", String(isVisible));
-          calendarDropdown.setAttribute("aria-hidden", String(!isVisible));
-        };
-
-        // Helper format tanggal untuk key database dan label tanggal berbahasa Indonesia.
-        const formatDateKey = (date) =>
-          `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
-
-        const niceDate = (date) =>
-          `${daysIndo[date.getDay()]}, ${date.getDate()} ${monthsIndo[date.getMonth()]} ${date.getFullYear()}`;
-
-        const leagueById = (id) => leagueFilters.find((l) => l.id === id);
-
-        // Render filter liga dan bind ulang click listener setelah innerHTML diganti.
-        function renderLeagueFilters() {
-          leagueFiltersEl.innerHTML = leagueFilters
-            .map((league) => {
-              const isActive = selectedLeague === league.id;
-
-              return `
-            <button
-              type="button"
-              data-league="${league.id}"
-              aria-pressed="${isActive}"
-              class="league-card flex min-h-[104px] flex-col items-center justify-center gap-3 rounded-xl border border-line first:bg-white bg-[#F6F8FF] px-4 py-3 text-center hover:selected-league ${isActive ? "selected-league" : ""}"
-            >
-              ${
-                league.type === "grid"
-                  ? `
-                    <div class="grid grid-cols-2 gap-1.5">
-                      ${Array.from({ length: 4 })
-                        .map(
-                          () =>
-                            `<span class="h-3.5 w-3.5 rounded-[2px] bg-defaultgray"></span>`,
-                        )
-                        .join("")}
-                    </div>
-                  `
-                  : `<img src="${league.logo}" alt="${league.name}" class="h-10 w-10 object-contain" />`
-              }
-              <span class="${isActive ? "font-semibold text-ink" : "text-[#030712]"} text-[12px] leading-tight">
-                ${league.name === "Konferensi Eropa" ? "Konferensi<br>Eropa" : league.name}
-              </span>
-            </button>
-          `;
-            })
-            .join("");
-
-          leagueFiltersEl
-            .querySelectorAll("[data-league]")
-            .forEach((button) => {
-              button.addEventListener("click", () => {
-                selectedLeague = button.dataset.league;
-                renderLeagueFilters();
-                renderMatches();
-              });
-            });
+        if (
+          !berat ||
+          !tinggi ||
+          !usia ||
+          berat <= 0 ||
+          tinggi <= 0 ||
+          usia <= 0
+        ) {
+          alert("Mohon isi semua field dengan benar.");
+          return;
         }
 
-        // Render tujuh pill tanggal, dengan currentDate berada di tengah rentang.
-        function renderDatePills() {
-          const start = new Date(currentDate);
-          start.setDate(start.getDate() - 3);
+        // Show loading with current values
+        document.getElementById("display-berat").textContent = berat;
+        document.getElementById("display-tinggi").textContent = tinggi;
+        document.getElementById("display-usia").textContent = usia;
+        showState("loading");
 
-          datePillsContainer.innerHTML = Array.from({ length: 7 })
-            .map((_, index) => {
-              const date = new Date(start);
-              date.setDate(start.getDate() + index);
+        // Simulate 2 second loading then show result
+        setTimeout(function () {
+          calculateAndShow(berat, tinggi, usia);
+        }, 2000);
+      }
 
-              const selected =
-                formatDateKey(date) === formatDateKey(currentDate);
-              return `
-            <button
-              type="button"
-              data-date="${formatDateKey(date)}"
-              aria-pressed="${selected}"
-              class="date-pill max-w-[50px] flex-1 px-2 py-2 min-w-[70px] rounded-lg ${selected ? "selected-date" : "hover:bg-gray-50"}"
-            >
-              <span class="block text-sm font-bold">${daysIndo[date.getDay()].slice(0, 3)}</span>
-              <span class="date-sub block text-[12px] ${selected ? "text-white" : "text-[#030712]"}">
-                ${date.getDate()} ${monthsIndo[date.getMonth()].slice(0, 3)}
-              </span>
-            </button>
-          `;
-            })
-            .join("");
+      function calculateAndShow(berat, tinggi, usia) {
+        const tinggiMeter = tinggi / 100;
+        const imt = berat / (tinggiMeter * tinggiMeter);
 
-          datePillsContainer
-            .querySelectorAll("[data-date]")
-            .forEach((button) => {
-              button.addEventListener("click", () => {
-                currentDate = new Date(`${button.dataset.date}T00:00:00`);
-                renderDatePills();
-                renderMatches();
-              });
-            });
+        // Determine category
+        let kategori, tagColor, borderColor, desc;
+        if (imt < 18.5) {
+          kategori = "Kurus";
+          tagColor = "bg-yellowresult";
+          borderColor = "border-yellowresult";
+          desc =
+            "Berat badan Anda di bawah ideal. Perlu peningkatan asupan gizi.";
+        } else if (imt < 25) {
+          kategori = "Normal";
+          tagColor = "bg-greenresult";
+          borderColor = "border-greenresult";
+          desc = "Berat badan Anda Ideal. Pertahankan pola hidup sehat!";
+        } else if (imt < 30) {
+          kategori = "Gemuk";
+          tagColor = "bg-orange";
+          borderColor = "border-orange";
+          desc =
+            "Berat badan Anda berlebih. Perhatikan pola makan dan rutin berolahraga.";
+        } else {
+          kategori = "Obesitas";
+          tagColor = "bg-redresult";
+          borderColor = "border-redresult";
+          desc =
+            "Berat badan Anda masuk kategori obesitas. Konsultasikan dengan dokter.";
         }
 
-        // Template satu baris pertandingan. value bisa berupa skor final atau jam kick-off.
-        function matchRow(home, away, value) {
-          const homeLogo =
-            teamLogo[home] ||
-            "https://assets.football-logos.cc/logos/england/1500x1500/everton.61ae3574.png";
-          const awayLogo =
-            teamLogo[away] ||
-            "https://assets.football-logos.cc/logos/england/1500x1500/aston-villa.5265a6b0.png";
-          const isScore = value.includes("-");
+        // IMT value with comma separator
+        const imtStr = imt.toFixed(1).replace(".", ",");
 
-          return `
-          <div class="grid grid-cols-[1fr_auto_1fr] items-center gap-3 px-4 py-3.5">
-            <div class="flex min-w-0 items-center justify-end gap-2.5 md:gap-3">
-              <span class="truncate text-right text-sm font-medium text-gray-800 md:text-[14px]">${home}</span>
-              <img src="${homeLogo}" alt="${home}" class="h-6 w-6 shrink-0 object-contain" />
-            </div>
+        // Fill result values
+        document.getElementById("result-berat").textContent = berat;
+        document.getElementById("result-tinggi").textContent = tinggi;
+        document.getElementById("result-usia").textContent = usia;
+        document.getElementById("imt-value-chart").textContent = imtStr;
 
-            <div class="rounded-md ${isScore ? "border border-[#FF3B14]/10 bg-[#FFF4EF] text-ink" : "bg-soft text-gray-700"} px-2.5 py-1 text-[14px] whitespace-nowrap">
-              ${value}
-            </div>
+        // Tag
+        const tag = document.getElementById("imt-tag");
+        const tagText = document.getElementById("imt-tag-text");
+        tag.className =
+          "inline-flex items-center gap-1 bg-white rounded-full pl-3 pr-2 py-1 border " +
+          borderColor;
+        tagText.textContent = kategori;
 
-            <div class="flex min-w-0 items-center gap-2.5 md:gap-3">
-              <img src="${awayLogo}" alt="${away}" class="h-6 w-6 shrink-0 object-contain" />
-              <span class="truncate font-medium text-defaultgray text-sm">${away}</span>
-            </div>
-          </div>
-        `;
+        // Tag text color
+        if (kategori === "Normal") {
+          tagText.className = "text-xs font-medium text-ink";
+        } else if (kategori === "Kurus") {
+          tagText.className = "text-xs font-medium text-yellowresult";
+        } else if (kategori === "Gemuk") {
+          tagText.className = "text-xs font-medium text-orange";
+        } else {
+          tagText.className = "text-xs font-medium text-redresult";
         }
 
-        // Filter pertandingan berdasarkan tanggal/liga, lalu kelompokkan per liga.
-        function renderMatches() {
-          const dateKey = formatDateKey(currentDate);
-          const matches = matchDatabase[dateKey] || [];
-          const filtered =
-            selectedLeague === "semua"
-              ? matches
-              : matches.filter((m) => m[0] === selectedLeague);
+        // Description
+        document.getElementById("imt-description").textContent = desc;
 
-          if (!filtered.length) {
-            matchContentContainer.innerHTML = `
-            <div class="rounded-2xl border border-line bg-white px-6 py-12 text-center shadow-card">
-              <div class="mx-auto mb-3 flex h-10 w-10 items-center justify-center rounded-full bg-soft text-gray-500">
-                <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8">
-                  <circle cx="12" cy="12" r="9"></circle>
-                  <path stroke-linecap="round" d="M12 8v4m0 4h.01"></path>
-                </svg>
-              </div>
-              <p class="text-sm font-semibold text-gray-700">Tidak ada jadwal pertandingan</p>
-              <p class="mt-1 text-xs text-gray-400">${niceDate(currentDate)}</p>
-            </div>
-          `;
-            return;
-          }
+        // Berat ideal range
+        const minIdeal = (18.5 * tinggiMeter * tinggiMeter)
+          .toFixed(1)
+          .replace(".", ",");
+        const maxIdeal = (24.9 * tinggiMeter * tinggiMeter)
+          .toFixed(1)
+          .replace(".", ",");
+        document.getElementById("berat-ideal").textContent =
+          minIdeal + " - " + maxIdeal + " kg";
 
-          const groups = {};
-          filtered.forEach(([leagueId, home, away, result]) => {
-            if (!groups[leagueId]) groups[leagueId] = [];
-            groups[leagueId].push({ home, away, result });
-          });
+        // BMR (Mifflin-St Jeor for男性)
+        const bmr = Math.round(10 * berat + 6.25 * tinggi - 5 * usia + 5);
+        document.getElementById("kalori-harian").textContent =
+          "± " + bmr.toLocaleString("id-ID") + " kkal";
 
-          matchContentContainer.innerHTML = Object.entries(groups)
-            .map(([leagueId, group]) => {
-              const league = leagueById(leagueId);
-
-              return `
-            <article class="overflow-hidden bg-white shadow-card">
-              <div class="flex items-center justify-center gap-4 bg-soft px-4 py-3 md:px-5">
-                <div class="flex items-center gap-2.5">
-                  ${
-                    league.logo && selectedLeague === "semua"
-                      ? `<img src="${league.logo}" alt="${league.name}" class="h-5 w-5 object-contain" />
-                         <h3 class="text-sm font-bold text-ink">${league.name}</h3>
-                        `
-                      : ``
-                  }
-                </div>
-                <span class="text-sm font-bold text-ink">${niceDate(currentDate)}</span>
-              </div>
-
-              <div class="divide-y divide-line">
-                ${group.map((m) => matchRow(m.home, m.away, m.result)).join("")}
-              </div>
-            </article>
-          `;
-            })
-            .join("");
+        // Chart center indicator color based on category
+        const indicator = document.querySelector(".bg-bluebreaking");
+        if (kategori === "Normal") {
+          indicator.style.backgroundColor = "#148440";
+        } else if (kategori === "Kurus") {
+          indicator.style.backgroundColor = "#0A92FC";
+        } else if (kategori === "Gemuk") {
+          indicator.style.backgroundColor = "#FBC723";
+        } else {
+          indicator.style.backgroundColor = "#F91114";
         }
 
-        // Render kalender bulanan beserta marker kecil untuk tanggal yang punya jadwal.
-        function renderCalendar() {
-          const year = calendarDate.getFullYear();
-          const month = calendarDate.getMonth();
-          calMonthYear.textContent = `${monthsIndo[month]} ${year}`;
-
-          const firstDay = new Date(year, month, 1).getDay();
-          const totalDays = new Date(year, month + 1, 0).getDate();
-          const prevTotalDays = new Date(year, month, 0).getDate();
-
-          let html = "";
-
-          for (let i = firstDay - 1; i >= 0; i--) {
-            html += `<span class="p-2 text-gray-300">${prevTotalDays - i}</span>`;
-          }
-
-          for (let day = 1; day <= totalDays; day++) {
-            const date = new Date(year, month, day);
-            const key = formatDateKey(date);
-            const active = key === formatDateKey(currentDate);
-            const hasMatches = matchDatabase[key] !== undefined;
-            const disabled = !hasMatches;
-
-            html += `
-            <button
-              type="button"
-              data-calendar-date="${key}"
-              aria-pressed="${active}"
-              ${disabled ? "disabled" : ""}
-              class="relative rounded-lg p-2.5 ${disabled ? "calendar-date-disabled" : active ? "bg-ink text-white" : "text-gray-700 hover:bg-soft"}"
-            >
-              ${day}
-              ${hasMatches && !active ? `<span class="absolute bottom-1 left-1/2 h-1 w-1 -translate-x-1/2 rounded-full bg-[#FF3B14]"></span>` : ""}
-            </button>
-          `;
-          }
-
-          calDaysGrid.innerHTML = html;
-
-          calDaysGrid
-            .querySelectorAll("[data-calendar-date]")
-            .forEach((button) => {
-              button.addEventListener("click", () => {
-                if (button.disabled) return;
-                currentDate = new Date(
-                  `${button.dataset.calendarDate}T00:00:00`,
-                );
-                calendarDate = new Date(currentDate);
-                calendarDropdown.classList.add("hidden");
-                syncCalendarState(false);
-                renderDatePills();
-                renderMatches();
-              });
-            });
+        // IMT value text color
+        const imtValueEl = document.getElementById("imt-value-chart");
+        if (kategori === "Normal") {
+          imtValueEl.style.color = "#148440";
+        } else if (kategori === "Kurus") {
+          imtValueEl.style.color = "#0A92FC";
+        } else if (kategori === "Gemuk") {
+          imtValueEl.style.color = "#FBC723";
+        } else {
+          imtValueEl.style.color = "#F91114";
         }
 
-        // Render tabel klasemen dan top skor dari data statis.
-        function renderTables() {
-          standingsBody.innerHTML = standings
-            .map(
-              (row) => `
-          <tr class="table-row border-b border-line relative">
-            <td class="relative rank-line text-center ${row.pos <= 4 ? "top-zone" : "neutral-zone"} px-4 py-3.5 text-sm font-semibold text-gray-700">${row.pos}</td>
-            <th scope="row" class="px-2 py-3.5 text-left font-normal">
-              <div class="flex items-center gap-2.5">
-                <img
-                  src="${teamLogo[row.club] || teamLogo.Everton}"
-                  alt="${row.club}"
-                  class="h-7 w-7 object-contain"
-                />
-                <span class="text-sm text-defaultgray">${row.club}</span>
-              </div>
-            </th>
-            <td class="px-2 py-3.5 text-center text-sm text-ink">${row.played}</td>
-            <td class="px-2 py-3.5 text-center text-sm text-ink">${row.win}</td>
-            <td class="px-2 py-3.5 text-center text-sm text-ink">${row.draw}</td>
-            <td class="px-2 py-3.5 text-center text-sm text-ink">${row.loss}</td>
-            <td class="px-2 py-3.5 text-center text-sm text-ink">${row.goals}</td>
-            <td class="px-2 py-3.5 text-center text-sm text-ink">${row.diff}</td>
-            <td class="px-2 py-3.5 text-center text-sm font-extrabold text-ink">${row.points}</td>
-          </tr>
-        `,
-            )
-            .join("");
+        // Reset animation
+        const resultCard = document.getElementById("result-card");
+        resultCard.classList.remove("fade-in-up");
+        void resultCard.offsetWidth; // trigger reflow
+        resultCard.classList.add("fade-in-up");
 
-          scorersBody.innerHTML = scorers
-            .map(
-              (row, index) => `
-          <tr class="table-row border-b border-line ${index === 0 ? "bg-[#FFF9F5]" : ""}">
-            <td class="px-4 py-3.5 text-sm font-semibold text-ink text-center">${row.pos}</td>
-            <th scope="row" class="px-2 py-3.5 text-left font-normal">
-              <div class="flex items-center gap-2.5">
-                <img
-                  src="${teamLogo[row.club] || teamLogo.Everton}"
-                  alt="${row.club}"
-                  class="h-6 w-6 object-contain"
-                />
-                <div class="min-w-0">
-                  <div class="truncate text-sm font-bold text-defaultgray">${row.player}</div>
-                  <div class="mt-0.5 text-sm text-defaultgray">${row.club}</div>
-                </div>
-              </div>
-            </th>
-            <td class="px-4 py-3.5 text-center text-sm text-ink">${row.goals}</td>
-            <td class="px-4 py-3.5 text-center text-sm text-ink">${row.pen}</td>
-            <td class="px-4 py-3.5 text-center text-sm text-ink">${row.assist}</td>
-          </tr>
-        `,
-            )
-            .join("");
-        }
+        showState("result");
+      }
 
-        // Event handlers untuk navigasi tanggal, kalender, dan click-away popup.
-        document.getElementById("prev-days").addEventListener("click", () => {
-          currentDate.setDate(currentDate.getDate() - 1);
-          renderDatePills();
-          renderMatches();
-        });
-
-        document.getElementById("next-days").addEventListener("click", () => {
-          currentDate.setDate(currentDate.getDate() + 1);
-          renderDatePills();
-          renderMatches();
-        });
-
-        calendarToggleBtn.addEventListener("click", (event) => {
-          event.stopPropagation();
-          calendarDropdown.classList.toggle("hidden");
-          syncCalendarState(!calendarDropdown.classList.contains("hidden"));
-          renderCalendar();
-        });
-
-        document
-          .getElementById("cal-prev-month")
-          .addEventListener("click", () => {
-            calendarDate.setMonth(calendarDate.getMonth() - 1);
-            renderCalendar();
-          });
-
-        document
-          .getElementById("cal-next-month")
-          .addEventListener("click", () => {
-            calendarDate.setMonth(calendarDate.getMonth() + 1);
-            renderCalendar();
-          });
-
-        document.addEventListener("click", (event) => {
-          if (
-            !calendarDropdown.contains(event.target) &&
-            !calendarToggleBtn.contains(event.target)
-          ) {
-            calendarDropdown.classList.add("hidden");
-            syncCalendarState(false);
-          }
-        });
-
-        renderLeagueFilters();
-        renderDatePills();
-        renderMatches();
-        renderTables();
-        syncCalendarState(false);
-      })();
+      function resetForm() {
+        inputBerat.value = "";
+        inputTinggi.value = "";
+        inputUsia.value = "";
+        showState("form");
+        inputBerat.focus();
+      }
     </script>
   </body>
 </html>
