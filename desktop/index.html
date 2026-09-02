@@ -123,6 +123,72 @@
       .input-field {
         transition: border-color 0.2s;
       }
+
+      .bmi-gauge {
+        width: 90px;
+        height: 45px;
+        position: relative;
+      }
+      .bmi-background {
+        position: relative;
+        height: 45px;
+        background-color: #f91114;
+        border-radius: 45px 45px 0 0;
+        overflow: hidden;
+        text-align: center;
+      }
+      .bmi-mask {
+        width: 66px;
+        position: absolute;
+        top: 13px;
+        right: 9px;
+        left: 12px;
+        height: 32px;
+        background-color: #f6f8ff;
+        border-radius: 36px 36px 0 0;
+      }
+      .bmi-section {
+        position: absolute;
+        top: 45px;
+        left: -200%;
+        width: 400%;
+        height: 400%;
+        margin-left: 45px;
+      }
+      .bmi-blue {
+        transform: rotate(135deg);
+        transform-origin: top center;
+        background-color: #0a92fc;
+      }
+      .bmi-green {
+        transform: rotate(90deg);
+        transform-origin: top center;
+        background-color: #4de065;
+      }
+      .bmi-yellow {
+        transform: rotate(45deg);
+        transform-origin: top center;
+        background-color: #fbc723;
+      }
+      .bmi-value {
+        position: absolute;
+        top: 22px;
+        left: 0;
+        width: 100%;
+        font-size: 18px;
+        font-weight: 700;
+        color: #148440;
+      }
+      .bmi-arrow {
+        position: absolute;
+        width: 14px;
+        height: 14px;
+        left: 38px;
+        top: 32px;
+        transform-origin: 50% 100%;
+        transform: rotate(0deg) scaleY(-1);
+        transition: transform 0.6s ease-out;
+      }
     </style>
   </head>
 
@@ -316,31 +382,28 @@
             >
               <!-- Chart + Info -->
               <div class="flex items-end gap-4 w-full">
-                <!-- Chart Visual -->
+                <!-- Chart Visual (CSS Semicircle Gauge) -->
                 <figure class="flex flex-col items-center gap-2">
-                  <div class="relative w-[90px] h-[45px]">
-                    <div
-                      class="absolute left-0 top-0 w-[31.82px] h-[22.73px] bg-greenresult border-[1.8px] border-soft rounded-sm"
-                    ></div>
-                    <div
-                      class="absolute left-[45px] top-0 w-[31.82px] h-[22.73px] bg-yellowresult border-[1.8px] border-soft rounded-sm"
-                    ></div>
-                    <div
-                      class="absolute left-0 top-[13.18px] w-[22.73px] h-[31.82px] bg-blueresult border-[1.8px] border-soft rounded-sm"
-                    ></div>
-                    <div
-                      class="absolute left-[67.27px] top-[13.18px] w-[22.73px] h-[31.82px] bg-redresult border-[1.8px] border-soft rounded-sm"
-                    ></div>
-                    <div
-                      id="chart-indicator"
-                      class="absolute left-[32.43px] top-[7.26px] w-[11.73px] h-[13.93px] bg-bluebreaking rounded-[0.7px]"
-                    ></div>
-                    <figcaption
-                      class="absolute left-[20px] top-[20px] w-[50px] text-center font-bold text-lg leading-[1.6em] text-greenresult"
-                      id="imt-value-chart"
-                    >
-                      24,2
-                    </figcaption>
+                  <div class="bmi-gauge">
+                    <div class="bmi-background">
+                      <div
+                        class="bmi-section bmi-blue border-2 border-white"
+                      ></div>
+                      <div
+                        class="bmi-section bmi-green border-2 border-white"
+                      ></div>
+                      <div
+                        class="bmi-section bmi-yellow border-2 border-white"
+                      ></div>
+                      <div class="bmi-mask"></div>
+                      <span id="imt-value-chart" class="bmi-value">24,2</span>
+                    </div>
+                    <img
+                      id="bmi-arrow"
+                      src="triangle-icon.svg"
+                      alt=""
+                      class="bmi-arrow"
+                    />
                   </div>
                   <!-- Tag Status -->
                   <div
@@ -493,6 +556,17 @@
           "Berat badan Anda masuk kategori obesitas. Konsultasikan dengan dokter.",
       };
 
+      function renderGauge(bmi) {
+        const minBMI = 10,
+          maxBMI = 40;
+        const clamped = Math.max(minBMI, Math.min(maxBMI, bmi));
+        const rotation = 90 - ((clamped - minBMI) / (maxBMI - minBMI)) * 180;
+        const arrow = $("bmi-arrow");
+        if (arrow) {
+          arrow.style.transform = "rotate(" + rotation + "deg) scaleY(-1)";
+        }
+      }
+
       let currentState = "form"; // form | loading | result
 
       function setState(state) {
@@ -576,12 +650,10 @@
 
         const colors = CATEGORY_COLORS[kategori];
 
-        // IMT value
+        // IMT value and gauge
         $("imt-value-chart").textContent = imtStr;
         $("imt-value-chart").style.color = colors.text;
-
-        // Chart indicator
-        $("chart-indicator").style.backgroundColor = colors.indicator;
+        renderGauge(imt);
 
         // Tag
         const tag = $("imt-tag");
