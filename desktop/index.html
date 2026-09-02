@@ -111,6 +111,25 @@
         animation: fadeInUp 0.5s ease-out forwards;
       }
 
+      .gender-option {
+        transition: all 0.2s ease;
+        border: 1px solid transparent;
+        padding: 0 4px;
+      }
+      .gender-option.selected {
+        background: #fff;
+        border-color: #ffb6a5;
+        color: #ff3b14;
+        box-shadow: 0 4px 12px rgba(255, 59, 20, 0.12);
+      }
+      .gender-option:not(.selected) {
+        color: #4f4f4f;
+      }
+      .gender-option:focus-visible {
+        outline: 1px solid #ff633d;
+        outline-offset: 2px;
+      }
+
       @keyframes spin {
         to {
           transform: rotate(360deg);
@@ -256,6 +275,92 @@
               class="space-y-2 w-full"
               onSubmit="return false;"
             >
+              <div>
+                <!-- Gender image selector -->
+                <div
+                  class="w-full h-[32px] rounded-[40px] bg-[#FFF0E6] p-1 flex gap-1"
+                >
+                  <button
+                    id="gender-option-pria"
+                    type="button"
+                    class="gender-option selected flex-1 rounded-[36px] flex items-center justify-center gap-2 cursor-pointer"
+                  >
+                    <svg
+                      id="gender-option-pria-icon"
+                      width="12"
+                      height="12"
+                      viewBox="0 0 32 32"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                      aria-hidden="true"
+                    >
+                      <circle
+                        cx="14"
+                        cy="14"
+                        r="6"
+                        stroke="#FF3B14"
+                        stroke-width="2.3"
+                      />
+                      <path
+                        d="M18.5 9.5L25 3M25 3H19.8M25 3V8.2M14 20V29"
+                        stroke="#FF3B14"
+                        stroke-width="2.3"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      />
+                    </svg>
+                    <span class="text-xs font-medium">Laki-laki</span>
+                  </button>
+                  <button
+                    id="gender-option-wanita"
+                    type="button"
+                    class="gender-option flex-1 rounded-[36px] flex items-center justify-center gap-2 cursor-pointer"
+                  >
+                    <svg
+                      id="gender-option-wanita-icon"
+                      width="12"
+                      height="12"
+                      viewBox="0 0 32 32"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                      aria-hidden="true"
+                    >
+                      <circle
+                        cx="16"
+                        cy="10"
+                        r="6"
+                        stroke="#555"
+                        stroke-width="2.3"
+                      />
+                      <path
+                        d="M16 16V28M11 23H21"
+                        stroke="#555"
+                        stroke-width="2.3"
+                        stroke-linecap="round"
+                      />
+                    </svg>
+                    <span class="text-xs font-medium">Perempuan</span>
+                  </button>
+                </div>
+
+                <!-- Hidden radios keep existing calculation logic/accessibility -->
+                <input
+                  type="radio"
+                  name="gender"
+                  id="gender-pria"
+                  value="pria"
+                  checked
+                  class="hidden"
+                />
+                <input
+                  type="radio"
+                  name="gender"
+                  id="gender-wanita"
+                  value="wanita"
+                  class="hidden"
+                />
+              </div>
+
               <div class="flex items-center gap-2 w-full">
                 <fieldset class="flex flex-col flex-1 min-w-0">
                   <legend
@@ -332,7 +437,7 @@
                 </fieldset>
               </div>
 
-              <fieldset class="flex flex-col flex-1 min-w-0">
+              <!--<fieldset class="flex flex-col flex-1 min-w-0">
                 <legend
                   class="text-xs font-medium text-ink px-0 py-1 whitespace-nowrap"
                 >
@@ -361,7 +466,7 @@
                     <span class="text-sm text-ink">Wanita</span>
                   </label>
                 </div>
-              </fieldset>
+              </fieldset>-->
             </form>
 
             <!-- Button -->
@@ -410,15 +515,90 @@
             <!-- Result Card (hidden by default) -->
             <article
               id="result-card"
-              class="hidden w-[280px] bg-soft rounded-xl gradient-border p-4 pb-2.5 flex-col items-center gap-4"
+              class="w-[280px] bg-soft rounded-xl gradient-border p-3 pb-2.5 flex-col items-center gap-4 flex"
             >
+              <!--Result header -->
+              <header class="flex items-center justify-between w-full">
+                <div class="flex items-center gap-2 self-start">
+                  <img
+                    src="calculator-icon.svg"
+                    alt=""
+                    class="w-4 h-4"
+                    aria-hidden="true"
+                  />
+                  <h2 class="font-bold text-sm text-ink whitespace-nowrap">
+                    Hasil IMT Anda
+                  </h2>
+                </div>
+
+                <div
+                  class="px-4 py-2 border rounded-lg flex items-center gap-2 bg-white w-fit"
+                >
+                  <img
+                    src="male-icon.svg"
+                    alt=""
+                    class="w-4 h-4 fill-defaultgray"
+                    aria-hidden="true"
+                  />
+                  <p id="#result-gender-value" class="text-xs text-defaultgray">
+                    wanita
+                  </p>
+                </div>
+              </header>
+
+              <!-- User's data -->
+              <div id="result-summary" class="w-full px-1">
+                <div
+                  class="flex justify-around gap-2 pt-1 border-b border-blue-result py-3"
+                >
+                  <!--Berat badan-->
+                  <div>
+                    <div class="result-stat-label text-xs leading-tight">
+                      Berat badan
+                    </div>
+                    <div
+                      id="result-weight"
+                      class="result-stat-value text-xs font-semibold"
+                    >
+                      55 kg
+                    </div>
+                  </div>
+
+                  <!--Tinggi badan-->
+                  <div>
+                    <div class="result-stat-label text-xs leading-tight">
+                      Tinggi badan
+                    </div>
+                    <div
+                      id="result-height"
+                      class="result-stat-value text-xs font-semibold"
+                    >
+                      167 cm
+                    </div>
+                  </div>
+
+                  <!--Usia-->
+                  <div>
+                    <div class="result-stat-label text-xs leading-tight">
+                      Usia
+                    </div>
+                    <div
+                      id="result-age"
+                      class="result-stat-value text-xs font-semibold"
+                    >
+                      22 Thn
+                    </div>
+                  </div>
+                </div>
+              </div>
+
               <!-- Chart + Info -->
-              <div class="flex items-end gap-4 w-full">
+              <div class="flex items-center gap-4 w-full">
                 <!-- Chart Visual (SVG Semicircle Gauge) -->
                 <figure class="flex flex-col items-center gap-2">
                   <div
                     style="
-                      width: 150px;
+                      width: 110px;
                       height: 82px;
                       display: flex;
                       align-items: flex-start;
@@ -492,7 +672,7 @@
                           style="
                             paint-order: stroke;
                             stroke: #fff;
-                            stroke-width: 2px;
+                            stroke-width: 4px;
                           "
                         >
                           <text id="label-18-5"></text>
@@ -539,11 +719,11 @@
                         <!-- Current BMI -->
                         <text
                           id="imt-value-chart"
-                          x="110"
+                          x="100"
                           y="120"
-                          style="font-size: 30px; font-weight: bold; fill: #000"
+                          style="font-size: 40px; font-weight: bold; fill: #000"
                         >
-                          BMI = 24,2
+                          24,2
                         </text>
 
                         <!-- Center pivot -->
@@ -582,10 +762,7 @@
                 </figure>
 
                 <!-- Result Description -->
-                <div class="flex flex-col justify-end flex-1 gap-0.5">
-                  <h3 class="font-bold text-sm text-resulttext leading-[1.6em]">
-                    Hasil IMT Anda
-                  </h3>
+                <div class="flex flex-col items-center flex-1 gap-0.5">
                   <p
                     id="imt-description"
                     class="text-xs text-ink leading-[1.6em]"
