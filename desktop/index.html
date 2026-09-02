@@ -253,10 +253,10 @@
             <!-- Form Inputs -->
             <form
               id="imt-form"
-              class="flex items-center gap-2 w-full"
+              class="space-y-2 w-full"
               onSubmit="return false;"
             >
-              <div>
+              <div class="flex items-center gap-2 w-full">
                 <fieldset class="flex flex-col flex-1 min-w-0">
                   <legend
                     class="text-xs font-medium text-ink px-0 py-1 whitespace-nowrap"
@@ -264,7 +264,7 @@
                     Berat badan
                   </legend>
                   <div
-                    class="input-field flex items-center justify-between h-[41px] px-3 bg-white border border-black/10 rounded-md"
+                    class="input-field flex items-center justify-between h-[36px] px-2 bg-white border border-orange/30 rounded-md"
                   >
                     <input
                       type="number"
@@ -275,7 +275,7 @@
                       required
                       class="w-full text-sm text-ink placeholder-defaultgray outline-none bg-transparent [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                     />
-                    <span class="text-sm text-defaultgray shrink-0 ml-1"
+                    <span class="text-xs text-defaultgray shrink-0 ml-1"
                       >kg</span
                     >
                   </div>
@@ -288,7 +288,7 @@
                     Tinggi badan
                   </legend>
                   <div
-                    class="input-field flex items-center justify-between h-[41px] px-3 bg-white border border-black/10 rounded-md"
+                    class="input-field flex items-center justify-between h-[36px] px-2 bg-white border border-orange/30 rounded-md"
                   >
                     <input
                       type="number"
@@ -300,7 +300,7 @@
                       required
                       class="w-full text-sm text-ink placeholder-defaultgray outline-none bg-transparent [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                     />
-                    <span class="text-sm text-defaultgray shrink-0 ml-1"
+                    <span class="text-xs text-defaultgray shrink-0 ml-1"
                       >cm</span
                     >
                   </div>
@@ -313,7 +313,7 @@
                     Usia
                   </legend>
                   <div
-                    class="input-field flex items-center justify-between h-[41px] px-3 bg-white border border-black/10 rounded-md"
+                    class="input-field flex items-center justify-between h-[36px] px-2 bg-white border border-orange/30 rounded-md"
                   >
                     <input
                       type="number"
@@ -325,21 +325,20 @@
                       required
                       class="w-full text-sm text-ink placeholder-defaultgray outline-none bg-transparent [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                     />
-                    <span class="text-sm text-defaultgray shrink-0 ml-1"
+                    <span class="text-xs text-defaultgray shrink-0 ml-1"
                       >Tahun</span
                     >
                   </div>
                 </fieldset>
               </div>
+
               <fieldset class="flex flex-col flex-1 min-w-0">
                 <legend
                   class="text-xs font-medium text-ink px-0 py-1 whitespace-nowrap"
                 >
                   Jenis Kelamin
                 </legend>
-                <div
-                  class="input-field flex items-center gap-3 h-[41px] px-3 bg-white border border-black/10 rounded-md"
-                >
+                <div class="input-field flex items-center gap-3 h-[32px]">
                   <label class="flex items-center gap-1 cursor-pointer">
                     <input
                       type="radio"
@@ -415,15 +414,156 @@
             >
               <!-- Chart + Info -->
               <div class="flex items-end gap-4 w-full">
-                <!-- Chart Visual (CSS Semicircle Gauge) -->
+                <!-- Chart Visual (SVG Semicircle Gauge) -->
                 <figure class="flex flex-col items-center gap-2">
-                  <div class="bmi-gauge">
-                    <div class="bmi-background">
-                      <div class="bmi-mask"></div>
-                      <span id="imt-value-chart" class="bmi-value">24,2</span>
-                    </div>
-                    <div id="bmi-arrow" class="bmi-arrow"></div>
+                  <div
+                    style="
+                      width: 150px;
+                      height: 82px;
+                      display: flex;
+                      align-items: flex-start;
+                      justify-content: center;
+                    "
+                  >
+                    <svg
+                      id="bmi-gauge"
+                      xmlns="http://www.w3.org/2000/svg"
+                      xmlns:xlink="http://www.w3.org/1999/xlink"
+                      width="150px"
+                      height="82px"
+                      viewBox="0 0 300 163"
+                      aria-label="Grafik kategori IMT"
+                    >
+                      <g
+                        transform="translate(18,18)"
+                        style="
+                          font-family: arial, helvetica, sans-serif;
+                          font-size: 12px;
+                        "
+                      >
+                        <defs>
+                          <marker
+                            id="arrowhead"
+                            markerWidth="10"
+                            markerHeight="7"
+                            refX="0"
+                            refY="3.5"
+                            orient="auto"
+                          >
+                            <polygon points="0 0, 10 3.5, 0 7"></polygon>
+                          </marker>
+
+                          <path
+                            id="curvetxt1"
+                            d="M-4 140 A140 140, 0, 0, 1, 284 140"
+                            style="fill: none"
+                          ></path>
+                          <path
+                            id="curvetxt2"
+                            d="M33 43.6 A140 140, 0, 0, 1, 280 140"
+                            style="fill: none"
+                          ></path>
+                          <path
+                            id="curvetxt3"
+                            d="M95 3 A140 140, 0, 0, 1, 284 140"
+                            style="fill: none"
+                          ></path>
+                          <path
+                            id="curvetxt4"
+                            d="M235.4 33 A140 140, 0, 0, 1, 284 140"
+                            style="fill: none"
+                          ></path>
+                        </defs>
+
+                        <!-- Four BMI zones: 10-18.5 / 18.5-25 / 25-30 / 30-40 -->
+                        <path id="zone-underweight" fill="#0A92FC"></path>
+                        <path id="zone-normal" fill="#4DE065"></path>
+                        <path id="zone-overweight" fill="#FBC723"></path>
+                        <path id="zone-obesity" fill="#F91114"></path>
+
+                        <!-- Inner white area -->
+                        <path
+                          d="M45 140 A90 90, 0, 0, 1, 230 140 Z"
+                          fill="#f6f8ff"
+                        ></path>
+
+                        <!-- Boundary labels: exactly on 18.5 / 25 / 30 -->
+                        <g
+                          style="
+                            paint-order: stroke;
+                            stroke: #fff;
+                            stroke-width: 2px;
+                          "
+                        >
+                          <text id="label-18-5"></text>
+                          <text id="label-25"></text>
+                          <text id="label-30"></text>
+                        </g>
+
+                        <!-- Optional endpoint scale -->
+                        <g
+                          style="
+                            paint-order: stroke;
+                            stroke: #fff;
+                            stroke-width: 2px;
+                          "
+                        >
+                          <text x="25" y="111" transform="rotate(-72, 25, 111)">
+                            10
+                          </text>
+                          <text x="252" y="95" transform="rotate(72, 252, 95)">
+                            40
+                          </text>
+                        </g>
+
+                        <!-- Category labels -->
+                        <g style="font-size: 14px">
+                          <text>
+                            <textPath xlink:href="#curvetxt1">
+                              Underweight
+                            </textPath>
+                          </text>
+                          <text>
+                            <textPath xlink:href="#curvetxt2">Normal</textPath>
+                          </text>
+                          <text>
+                            <textPath xlink:href="#curvetxt3">
+                              Overweight
+                            </textPath>
+                          </text>
+                          <text>
+                            <textPath xlink:href="#curvetxt4">Obesity</textPath>
+                          </text>
+                        </g>
+
+                        <!-- Current BMI -->
+                        <text
+                          id="imt-value-chart"
+                          x="110"
+                          y="120"
+                          style="font-size: 30px; font-weight: bold; fill: #000"
+                        >
+                          BMI = 24,2
+                        </text>
+
+                        <!-- Center pivot -->
+                        <circle cx="140" cy="140" r="5" fill="#666"></circle>
+
+                        <!-- Needle -->
+                        <line
+                          id="bmi-arrow"
+                          x1="140"
+                          y1="140"
+                          x2="65"
+                          y2="140"
+                          stroke="#666"
+                          stroke-width="2"
+                          marker-end="url(#arrowhead)"
+                        ></line>
+                      </g>
+                    </svg>
                   </div>
+
                   <!-- Tag Status -->
                   <div
                     id="imt-tag"
@@ -684,29 +824,87 @@
         return "Obesitas";
       }
 
-      // Render gauge with smooth animation from 0 to target
-      function renderGauge(bmi) {
-        const minBMI = 10,
-          maxBMI = 40;
-        const clamped = Math.max(minBMI, Math.min(maxBMI, bmi));
-        // Arrow points UP at 0deg. BMI 10=LEFT(-90°), BMI 25=UP(0°), BMI 40=RIGHT(90°)
-        const rotation = ((clamped - minBMI) / (maxBMI - minBMI)) * 180 - 90;
-        const arrow = $("bmi-arrow");
+      // Gauge geometry follows the reference SVG exactly.
+      // BMI 10 = left, 18.5 = first boundary, 25 = top,
+      // BMI 30 = third boundary, BMI 40 = right.
+      const GAUGE_MIN_BMI = 10;
+      const GAUGE_MAX_BMI = 40;
 
-        if (arrow) {
-          // Reset to 0 first, then animate to target
-          arrow.style.transition = "none";
-          arrow.style.transform = "rotate(0deg)";
-
-          // Force reflow
-          void arrow.offsetWidth;
-
-          // Animate to target with elastic effect
-          arrow.style.transition =
-            "transform 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275)";
-          arrow.style.transform = "rotate(" + rotation + "deg)";
-        }
+      function polarPoint(cx, cy, radius, angleDeg) {
+        const angle = (angleDeg * Math.PI) / 180;
+        return {
+          x: cx + radius * Math.cos(angle),
+          y: cy + radius * Math.sin(angle),
+        };
       }
+
+      function bmiToAngle(bmi) {
+        const clamped = Math.max(GAUGE_MIN_BMI, Math.min(GAUGE_MAX_BMI, bmi));
+
+        return (
+          180 +
+          ((clamped - GAUGE_MIN_BMI) / (GAUGE_MAX_BMI - GAUGE_MIN_BMI)) * 180
+        );
+      }
+
+      function describeGaugeSegment(startBMI, endBMI) {
+        const cx = 140;
+        const cy = 140;
+        const radius = 140;
+        const startAngle = bmiToAngle(startBMI);
+        const endAngle = bmiToAngle(endBMI);
+        const start = polarPoint(cx, cy, radius, endAngle);
+        const end = polarPoint(cx, cy, radius, startAngle);
+        const largeArcFlag = endAngle - startAngle > 180 ? 1 : 0;
+
+        return `M${cx} ${cy} L${start.x.toFixed(1)} ${start.y.toFixed(1)} A${radius} ${radius} 0 ${largeArcFlag} 0 ${end.x.toFixed(1)} ${end.y.toFixed(1)} Z`;
+      }
+
+      function setBoundaryLabel(id, bmi, text) {
+        const point = polarPoint(140, 140, 116, bmiToAngle(bmi));
+        const label = $(id);
+
+        label.textContent = text;
+        label.setAttribute("x", point.x.toFixed(1));
+        label.setAttribute("y", (point.y + 4).toFixed(1));
+        label.setAttribute("text-anchor", "middle");
+        label.setAttribute("font-size", "12");
+      }
+
+      function renderGaugeZones() {
+        $("zone-underweight").setAttribute("d", describeGaugeSegment(10, 18.5));
+        $("zone-normal").setAttribute("d", describeGaugeSegment(18.5, 25));
+        $("zone-overweight").setAttribute("d", describeGaugeSegment(25, 30));
+        $("zone-obesity").setAttribute("d", describeGaugeSegment(30, 40));
+
+        // Labels are mathematically anchored to the zone boundaries.
+        setBoundaryLabel("label-18-5", 18.5, "18.5");
+        setBoundaryLabel("label-25", 25, "25");
+        setBoundaryLabel("label-30", 30, "30");
+      }
+
+      function renderGauge(bmi) {
+        const clamped = Math.max(GAUGE_MIN_BMI, Math.min(GAUGE_MAX_BMI, bmi));
+
+        // The reference needle starts pointing left (0deg).
+        // BMI 10 = 0deg, BMI 25 = 90deg, BMI 40 = 180deg.
+        const rotation =
+          ((clamped - GAUGE_MIN_BMI) / (GAUGE_MAX_BMI - GAUGE_MIN_BMI)) * 180;
+
+        const arrow = $("bmi-arrow");
+        if (!arrow) return;
+
+        arrow.style.transition = "none";
+        arrow.setAttribute("transform", `rotate(0 140 140)`);
+
+        void arrow.getBoundingClientRect();
+
+        arrow.style.transition =
+          "transform 1s cubic-bezier(0.175, 0.885, 0.32, 1.275)";
+        arrow.setAttribute("transform", `rotate(${rotation} 140 140)`);
+      }
+
+      renderGaugeZones();
 
       let currentState = "form"; // form | loading | result
 
