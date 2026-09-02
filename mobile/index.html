@@ -1,0 +1,761 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Widget IMT</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ["Inter", "sans-serif"],
+            },
+            colors: {
+              ink: "#030712",
+              orange: "#FF3B14",
+              soft: "#F6F8FF",
+              line: "#E5EAF4",
+              defaultgray: "#4f4f4f",
+              primary50: "#FFFBF7",
+              linkblue: "#0042A5",
+              bluebreaking: "#162456",
+              strokeblue: "rgba(0, 66, 165, 0.08)",
+              greenresult: "#4DE065",
+              redresult: "#F91114",
+              yellowresult: "#FBC723",
+              blueresult: "#0A92FC",
+              resulttext: "#364153",
+            },
+            boxShadow: {
+              card: "0 1px 2px rgba(18, 35, 71, 0.03)",
+              float: "0 12px 32px rgba(17, 24, 39, 0.12)",
+              btn: "0px 3px 7px -3px rgba(0,0,0,0.3), 0px 6px 12px -2px rgba(50,50,93,0.25)",
+              btnsm: "0px 1.9px 2.4px 0px rgba(0,0,0,0.04)",
+            },
+          },
+        },
+      };
+    </script>
+
+    <style>
+      html { scroll-behavior: smooth; }
+      body { background: #fff; }
+      .no-scrollbar::-webkit-scrollbar { display: none; }
+      .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+      @media (max-width: 767px) { .desktop-only { display: none; } }
+      @media (min-width: 768px) { .mobile-only { display: none; } }
+
+      .gradient-btn {
+        background: linear-gradient(90deg, #ff633d 0%, #0e09ff 100%);
+      }
+      .gradient-btn-reverse {
+        background: linear-gradient(90deg, #0e09ff 0%, #ff633d 100%);
+      }
+      .gradient-border { position: relative; }
+      .gradient-border::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: inherit;
+        padding: 1px;
+        background: linear-gradient(90deg, #ff633d 0%, #0e09ff 100%);
+        -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+        -webkit-mask-composite: xor;
+        mask-composite: exclude;
+        pointer-events: none;
+      }
+      @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(12px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      .fade-in-up { animation: fadeInUp 0.5s ease-out forwards; }
+      @keyframes spin { to { transform: rotate(360deg); } }
+      .loading-spinner { animation: spin 0.8s linear infinite; }
+
+      .gender-option {
+        transition: all 0.2s ease;
+        border: 2px solid transparent;
+      }
+      .gender-option.selected {
+        background: #fff;
+        border-color: #ffb6a5;
+        box-shadow: 0 4px 12px rgba(255, 59, 20, 0.12);
+      }
+      .gender-option:not(.selected) {
+        color: #4f4f4f;
+      }
+      .gender-option:focus-visible {
+        outline: 2px solid #ff633d;
+        outline-offset: 2px;
+      }
+
+      .result-surface {
+        background: #f6f8ff;
+        border-radius: 20px;
+      }
+
+      .result-stat-label { color: #0b1020; }
+      .result-stat-value { color: #070b18; font-weight: 800; }
+
+      .bmi-gauge-wrap {
+        position: relative;
+        width: 110px;
+        height: 82px;
+        flex: 0 0 110px;
+        overflow: visible;
+      }
+      .bmi-gauge-wrap svg {
+        display: block;
+        width: 150px;
+        height: 82px;
+        transform: translateX(-18px);
+      }
+
+      .result-description {
+        font-size: 15px;
+        line-height: 1.9;
+        color: #080b16;
+      }
+
+      .status-pill {
+        min-width: 110px;
+        height: 42px;
+        border-radius: 999px;
+      }
+
+      .result-info-card {
+        background: #fff;
+        border: 2px solid #e4eaf4;
+        border-radius: 18px;
+        min-height: 112px;
+      }
+
+      .result-gender-card {
+        min-width: 138px;
+        height: 52px;
+        border: 2px solid #e4eaf4;
+        border-radius: 18px;
+        background: #fff;
+      }
+
+      .gender-mini-icon {
+        width: 30px;
+        height: 30px;
+        flex: 0 0 30px;
+      }
+
+      .input-field {
+        transition: border-color 0.2s;
+      }
+    </style>
+  </head>
+
+  <body class="bg-white text-ink font-sans antialiased">
+    <div class="flex gap-5 mx-auto max-w-5xl px-5 py-7 md:px-8 md:py-10">
+      <main class="max-w-[640px] flex-1">
+        <div class="w-full h-screen bg-black/5 rounded-sm">Main content</div>
+      </main>
+
+      <aside class="w-[300px]">
+        <section
+          id="imt-widget"
+          class="relative w-[300px] bg-primary50 rounded-2xl p-2 flex flex-col items-center"
+          aria-label="Kalkulator IMT"
+          style="background-image:url(./imt-widget-vector.svg);background-repeat:no-repeat;background-position:right top;background-size:contain;z-index:0;"
+        >
+          <div class="absolute right-0 top-0 bg-white rounded-[5px] px-2 py-1 shadow-btnsm flex items-center">
+            <img src="allianz-logo.svg" alt="Allianz" class="w-16" />
+          </div>
+
+          <header class="w-full pt-6 pb-3 rounded-xl overflow-hidden">
+            <div class="flex items-center gap-2">
+              <img src="./hero-people.svg" alt="" class="w-[61px] h-[42px]" aria-hidden="true" />
+              <div class="flex flex-col gap-0">
+                <h1 class="text-linkblue font-extrabold text-base">Kalkulator Kesehatan</h1>
+                <p class="text-ink text-[11px] leading-[1.3em]">Cek IMT &amp; Pilih Perlindungan terbaik</p>
+              </div>
+            </div>
+          </header>
+
+          <div class="w-full flex flex-col items-center gap-4">
+            <!-- Result header -->
+            <div id="result-header" class="hidden w-full px-1 pt-1">
+              <div class="flex items-center justify-between gap-2">
+                <div class="flex items-center gap-2">
+                  <img src="calculator-icon.svg" alt="" class="w-7 h-7" aria-hidden="true" />
+                  <h2 class="font-extrabold text-[23px] leading-none text-ink">Hasil IMT Anda</h2>
+                </div>
+                <div class="result-gender-card px-3 flex items-center gap-2">
+                  <svg id="result-gender-icon" class="gender-mini-icon" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <circle cx="14" cy="14" r="6" stroke="#555" stroke-width="2.3"/>
+                    <path d="M14 20V29M9 24.5H19M14 20L14 14M18.2 9.8L24.5 3.5M24.5 3.5H19.5M24.5 3.5V8.5" stroke="#555" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                  <span id="result-gender-label" class="text-[15px] font-medium text-[#555]">Laki-laki</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Form -->
+            <div id="form-section" class="w-full flex flex-col items-center gap-4">
+              <div class="flex items-center gap-[5px] self-start">
+                <img src="calculator-icon.svg" alt="" class="w-4 h-4" aria-hidden="true" />
+                <h2 class="font-bold text-sm text-ink whitespace-nowrap">Hitung IMT (Index Massa Tubuh)</h2>
+              </div>
+
+              <!-- Gender image selector -->
+              <div class="w-full h-[74px] rounded-[40px] bg-[#FFF0E6] p-1 flex gap-1">
+                <button id="gender-option-pria" type="button" class="gender-option selected flex-1 rounded-[36px] flex items-center justify-center gap-2 cursor-pointer">
+                  <svg id="gender-option-pria-icon" width="25" height="25" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <circle cx="14" cy="14" r="6" stroke="#FF3B14" stroke-width="2.3"/>
+                    <path d="M18.5 9.5L25 3M25 3H19.8M25 3V8.2M14 20V29" stroke="#FF3B14" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                  <span class="text-[16px] font-medium">Laki-laki</span>
+                </button>
+                <button id="gender-option-wanita" type="button" class="gender-option flex-1 rounded-[36px] flex items-center justify-center gap-2 cursor-pointer">
+                  <svg id="gender-option-wanita-icon" width="25" height="25" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <circle cx="16" cy="10" r="6" stroke="#555" stroke-width="2.3"/>
+                    <path d="M16 16V28M11 23H21" stroke="#555" stroke-width="2.3" stroke-linecap="round"/>
+                  </svg>
+                  <span class="text-[16px] font-medium">Perempuan</span>
+                </button>
+              </div>
+
+              <!-- Hidden radios keep existing calculation logic/accessibility -->
+              <input type="radio" name="gender" id="gender-pria" value="pria" checked class="hidden" />
+              <input type="radio" name="gender" id="gender-wanita" value="wanita" class="hidden" />
+
+              <form id="imt-form" class="space-y-2 w-full" onSubmit="return false;">
+                <div class="flex items-center gap-2 w-full">
+                  <fieldset class="flex flex-col flex-1 min-w-0">
+                    <legend class="text-xs font-medium text-ink px-0 py-1 whitespace-nowrap">Berat badan</legend>
+                    <div class="input-field flex items-center justify-between h-[36px] px-2 bg-white border border-orange/30 rounded-md">
+                      <input type="number" id="input-berat" placeholder="0" min="1" max="300" required class="w-full text-sm text-ink placeholder-defaultgray outline-none bg-transparent [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" />
+                      <span class="text-xs text-defaultgray shrink-0 ml-1">kg</span>
+                    </div>
+                  </fieldset>
+                  <fieldset class="flex flex-col flex-1 min-w-0">
+                    <legend class="text-xs font-medium text-ink px-0 py-1 whitespace-nowrap">Tinggi badan</legend>
+                    <div class="input-field flex items-center justify-between h-[36px] px-2 bg-white border border-orange/30 rounded-md">
+                      <input type="number" id="input-tinggi" value="167" placeholder="0" min="1" max="300" required class="w-full text-sm text-ink placeholder-defaultgray outline-none bg-transparent [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" />
+                      <span class="text-xs text-defaultgray shrink-0 ml-1">cm</span>
+                    </div>
+                  </fieldset>
+                  <fieldset class="flex flex-col flex-1 min-w-0">
+                    <legend class="text-xs font-medium text-ink px-0 py-1 whitespace-nowrap">Usia</legend>
+                    <div class="input-field flex items-center justify-between h-[36px] px-2 bg-white border border-orange/30 rounded-md">
+                      <input type="number" id="input-usia" value="22" placeholder="0" min="1" max="120" required class="w-full text-sm text-ink placeholder-defaultgray outline-none bg-transparent [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" />
+                      <span class="text-xs text-defaultgray shrink-0 ml-1">Tahun</span>
+                    </div>
+                  </fieldset>
+                </div>
+              </form>
+            </div>
+
+            <!-- Loading -->
+            <div id="loading-spinner" class="hidden flex-col items-center gap-3 py-2">
+              <svg class="loading-spinner w-8 h-8" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="16" cy="16" r="14" stroke="#E5EAF4" stroke-width="3"/>
+                <path d="M16 2a14 14 0 0 1 14 14" stroke="#FF3B14" stroke-width="3" stroke-linecap="round"/>
+              </svg>
+              <span class="text-xs text-defaultgray">Menghitung IMT Anda...</span>
+            </div>
+
+            <!-- Result summary -->
+            <div id="result-summary" class="hidden w-full px-1">
+              <div class="grid grid-cols-3 gap-2 pt-1">
+                <div>
+                  <div class="result-stat-label text-[11px] leading-tight">Berat badan</div>
+                  <div id="result-weight" class="result-stat-value text-[17px]">70 kg</div>
+                </div>
+                <div>
+                  <div class="result-stat-label text-[11px] leading-tight">Tinggi badan</div>
+                  <div id="result-height" class="result-stat-value text-[17px]">170 cm</div>
+                </div>
+                <div>
+                  <div class="result-stat-label text-[11px] leading-tight">Usia</div>
+                  <div id="result-age" class="result-stat-value text-[17px]">30 Thn</div>
+                </div>
+              </div>
+            </div>
+
+            <div id="result-divider" class="hidden w-full h-[1px] bg-[#DFE6F3]"></div>
+
+            <!-- New result -->
+            <article id="result-main" class="hidden w-full result-surface p-3">
+              <div class="flex items-start gap-3">
+                <figure class="flex flex-col items-center gap-2 shrink-0">
+                  <div class="bmi-gauge-wrap">
+                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="150" height="82" viewBox="0 0 300 163" aria-label="Grafik kategori IMT">
+                      <g transform="translate(18,18)" style="font-family:arial,helvetica,sans-serif;font-size:12px;">
+                        <defs>
+                          <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="0" refY="3.5" orient="auto"><polygon points="0 0, 10 3.5, 0 7"></polygon></marker>
+                          <path id="curvetxt1" d="M-4 140 A140 140, 0, 0, 1, 284 140" fill="none"></path>
+                          <path id="curvetxt2" d="M33 43.6 A140 140, 0, 0, 1, 280 140" fill="none"></path>
+                          <path id="curvetxt3" d="M95 3 A140 140, 0, 0, 1, 284 140" fill="none"></path>
+                          <path id="curvetxt4" d="M235.4 33 A140 140, 0, 0, 1, 284 140" fill="none"></path>
+                        </defs>
+                        <path id="zone-underweight" fill="#0A92FC"></path>
+                        <path id="zone-normal" fill="#4DE065"></path>
+                        <path id="zone-overweight" fill="#FBC723"></path>
+                        <path id="zone-obesity" fill="#F91114"></path>
+                        <path d="M45 140 A90 90, 0, 0, 1, 230 140 Z" fill="#F6F8FF"></path>
+                        <g style="font-size:14px;display:none;">
+                          <text><textPath xlink:href="#curvetxt1">Underweight</textPath></text>
+                          <text><textPath xlink:href="#curvetxt2">Normal</textPath></text>
+                          <text><textPath xlink:href="#curvetxt3">Overweight</textPath></text>
+                          <text><textPath xlink:href="#curvetxt4">Obesity</textPath></text>
+                        </g>
+                        <text id="label-18-5" fill="#364153"></text>
+                        <text id="label-25" fill="#364153"></text>
+                        <text id="label-30" fill="#364153"></text>
+                        <text x="25" y="111" transform="rotate(-72, 25, 111)" fill="#364153" style="display:none;">10</text>
+                        <text x="252" y="95" transform="rotate(72, 252, 95)" fill="#364153" style="display:none;">40</text>
+                        <text id="imt-value-chart" x="110" y="120" style="font-size:30px;font-weight:bold;" text-anchor="middle" fill="#148440">24,2</text>
+                        <circle cx="140" cy="140" r="5" fill="#666"></circle>
+                        <line id="bmi-arrow" x1="140" y1="140" x2="65" y2="140" stroke="#162456" stroke-width="3" marker-end="url(#arrowhead)"></line>
+                      </g>
+                    </svg>
+                  </div>
+                  <div id="imt-tag" class="status-pill inline-flex items-center justify-center gap-2 bg-white border-2 border-greenresult px-3">
+                    <span id="imt-tag-text" class="text-sm font-medium">Normal</span>
+                    <span id="imt-tag-check" class="w-6 h-6 rounded-full inline-flex items-center justify-center text-white text-sm font-bold">✓</span>
+                  </div>
+                </figure>
+
+                <div class="flex-1 pt-2">
+                  <p id="imt-description" class="result-description font-medium">Berat badan Anda Ideal. Pertahankan pola hidup sehat!</p>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-2 gap-2 mt-5">
+                <div class="result-info-card p-3 flex flex-col justify-between">
+                  <div class="flex items-start gap-2">
+                    <div class="w-8 h-8 rounded-lg bg-soft flex items-center justify-center shrink-0">
+                      <img src="weight-icon.svg" alt="" class="w-5 h-5" aria-hidden="true" />
+                    </div>
+                    <span class="text-[13px] leading-tight text-linkblue font-medium">Berat Ideal<br/>Anda</span>
+                  </div>
+                  <p id="berat-ideal" class="text-[16px] font-extrabold text-ink leading-none mt-3">53,5 - 72,1 kg</p>
+                </div>
+
+                <div class="result-info-card p-3 flex flex-col justify-between">
+                  <div class="flex items-start gap-2">
+                    <div class="w-8 h-8 rounded-lg bg-[#FFF0E6] flex items-center justify-center shrink-0">
+                      <img src="flame-icon.svg" alt="" class="w-4 h-5" aria-hidden="true" />
+                    </div>
+                    <span class="text-[13px] leading-tight text-orange font-medium">Kalori Harian<br/>(BMR)</span>
+                  </div>
+                  <p id="kalori-harian" class="text-[16px] font-extrabold text-ink leading-none mt-3">± 1.650 kkal</p>
+                </div>
+              </div>
+            </article>
+
+            <button id="btn-action" type="button" class="w-[280px] h-[41px] gradient-btn rounded-[7.5px] shadow-btn flex items-center justify-center cursor-pointer">
+              <span id="btn-label" class="text-white font-semibold text-[15px] leading-4 text-center">Hitung IMT</span>
+            </button>
+          </div>
+        </section>
+      </aside>
+
+      <script>
+      const $ = (id) => document.getElementById(id);
+
+      const inputBerat = $("input-berat");
+      const inputTinggi = $("input-tinggi");
+      const inputUsia = $("input-usia");
+      const inputGenderPria = $("gender-pria");
+      const inputGenderWanita = $("gender-wanita");
+      const btnAction = $("btn-action");
+      const btnLabel = $("btn-label");
+      const loadingSpinner = $("loading-spinner");
+      const resultCard = $("result-card");
+      const bottomBanner = $("bottom-banner");
+      const inputFields = document.querySelectorAll(".input-field");
+
+      const CATEGORY_COLORS = {
+        Underweight: {
+          indicator: "#0A92FC",
+          text: "#0A92FC",
+          border: "border-blueresult",
+          tagText: "text-blueresult",
+        },
+        "Normal (Ideal)": {
+          indicator: "#148440",
+          text: "#148440",
+          border: "border-greenresult",
+          tagText: "text-greenresult",
+        },
+        Overweight: {
+          indicator: "#FBC723",
+          text: "#FBC723",
+          border: "border-yellowresult",
+          tagText: "text-yellowresult",
+        },
+        Obesitas: {
+          indicator: "#F91114",
+          text: "#F91114",
+          border: "border-redresult",
+          tagText: "text-redresult",
+        },
+      };
+
+      const DESCRIPTIONS = {
+        Underweight:
+          "Berat badan Anda kurang. Perlu peningkatan asupan gizi seimbang.",
+        "Normal (Ideal)":
+          "Berat badan Anda Ideal. Pertahankan pola hidup sehat!",
+        Overweight:
+          "Berat badan Anda berlebih. Perhatikan pola makan dan rutin berolahraga.",
+        Obesitas:
+          "Berat badan Anda masuk kategori obesitas. Konsultasikan dengan dokter.",
+      };
+
+      // Reference table: Ideal Weight by Height (cm) for Pria and Wanita
+      const IDEAL_WEIGHT_TABLE = [
+        { height: 152, pria: 52, wanita: 49 },
+        { height: 155, pria: 54, wanita: 51 },
+        { height: 157, pria: 56, wanita: 52 },
+        { height: 160, pria: 58, wanita: 54 },
+        { height: 163, pria: 60, wanita: 56 },
+        { height: 165, pria: 62, wanita: 57 },
+        { height: 168, pria: 63, wanita: 59 },
+        { height: 170, pria: 65, wanita: 61 },
+        { height: 173, pria: 67, wanita: 63 },
+        { height: 175, pria: 69, wanita: 64 },
+        { height: 178, pria: 71, wanita: 66 },
+        { height: 180, pria: 73, wanita: 68 },
+        { height: 185, pria: 76, wanita: 70 },
+        { height: 190, pria: 80, wanita: 74 },
+        { height: 193, pria: 83, wanita: 80 },
+      ];
+
+      // Reference table: Daily Calories by Age Group
+      const CALORIE_TABLE = [
+        { minAge: 0, maxAge: 0.416, pria: 550, wanita: 550 }, // 0-5 bulan
+        { minAge: 0.5, maxAge: 0.916, pria: 725, wanita: 725 }, // 6-11 bulan
+        { minAge: 1, maxAge: 3, pria: 1350, wanita: 1350 }, // 1-3 tahun
+        { minAge: 4, maxAge: 6, pria: 1400, wanita: 1400 }, // 4-6 tahun
+        { minAge: 7, maxAge: 9, pria: 1650, wanita: 1650 }, // 7-9 tahun
+        { minAge: 10, maxAge: 12, pria: 2000, wanita: 1900 }, // 10-12 tahun
+        { minAge: 13, maxAge: 15, pria: 2400, wanita: 2050 }, // 13-15 tahun
+        { minAge: 16, maxAge: 18, pria: 2650, wanita: 2100 }, // 16-18 tahun
+        { minAge: 19, maxAge: 29, pria: 2650, wanita: 2250 }, // 19-29 tahun
+        { minAge: 30, maxAge: 49, pria: 2550, wanita: 2150 }, // 30-49 tahun
+        { minAge: 50, maxAge: 64, pria: 2150, wanita: 1800 }, // 50-64 tahun
+        { minAge: 65, maxAge: 120, pria: 1800, wanita: 1550 }, // 65+ tahun
+      ];
+
+      // Linear interpolation helper
+      function lerp(a, b, t) {
+        return a + (b - a) * t;
+      }
+
+      // Get ideal weight from reference table with linear interpolation
+      function getIdealWeight(heightCm, gender) {
+        // Find exact match
+        const exact = IDEAL_WEIGHT_TABLE.find((row) => row.height === heightCm);
+        if (exact) {
+          return gender === "pria" ? exact.pria : exact.wanita;
+        }
+
+        // Find surrounding rows for interpolation
+        let lower = null;
+        let upper = null;
+
+        for (const row of IDEAL_WEIGHT_TABLE) {
+          if (row.height < heightCm) {
+            lower = row;
+          } else if (row.height > heightCm && !upper) {
+            upper = row;
+            break;
+          }
+        }
+
+        // If height is outside table range, use formula fallback
+        if (!lower || !upper) {
+          return getIdealWeightFormula(heightCm);
+        }
+
+        // Linear interpolation
+        const t = (heightCm - lower.height) / (upper.height - lower.height);
+        const lowerWeight = gender === "pria" ? lower.pria : lower.wanita;
+        const upperWeight = gender === "pria" ? upper.pria : upper.wanita;
+        return Math.round(lerp(lowerWeight, upperWeight, t) * 10) / 10;
+      }
+
+      // Formula fallback for ideal weight (BMI 18.5 - 24.9 range)
+      function getIdealWeightFormula(heightCm) {
+        const heightM = heightCm / 100;
+        const min = Math.round(18.5 * heightM * heightM * 10) / 10;
+        const max = Math.round(24.9 * heightM * heightM * 10) / 10;
+        return { min, max };
+      }
+
+      // Get daily calories from reference table with formula fallback (Mifflin-St Jeor)
+      function getDailyCalories(age, gender) {
+        // Find matching age group
+        const group = CALORIE_TABLE.find(
+          (g) => age >= g.minAge && age <= g.maxAge,
+        );
+
+        if (group) {
+          return gender === "pria" ? group.pria : group.wanita;
+        }
+
+        // Formula fallback: Mifflin-St Jeor BMR
+        // Note: We need weight and height for this, but we only have age here
+        // This is a simplified fallback based on age averages
+        return Math.round(2000 - (age - 30) * 10);
+      }
+
+      // Get BMI category per WHO standard
+      function getBMICategory(imt) {
+        if (imt < 18.5) return "Underweight";
+        if (imt < 25) return "Normal (Ideal)";
+        if (imt < 30) return "Overweight";
+        return "Obesitas";
+      }
+
+      // Gauge geometry follows the reference SVG exactly.
+      // BMI 10 = left, 18.5 = first boundary, 25 = top,
+      // BMI 30 = third boundary, BMI 40 = right.
+      const GAUGE_MIN_BMI = 10;
+      const GAUGE_MAX_BMI = 40;
+
+      function polarPoint(cx, cy, radius, angleDeg) {
+        const angle = (angleDeg * Math.PI) / 180;
+        return {
+          x: cx + radius * Math.cos(angle),
+          y: cy + radius * Math.sin(angle),
+        };
+      }
+
+      function bmiToAngle(bmi) {
+        const clamped = Math.max(GAUGE_MIN_BMI, Math.min(GAUGE_MAX_BMI, bmi));
+
+        return (
+          180 +
+          ((clamped - GAUGE_MIN_BMI) / (GAUGE_MAX_BMI - GAUGE_MIN_BMI)) * 180
+        );
+      }
+
+      function describeGaugeSegment(startBMI, endBMI) {
+        const cx = 140;
+        const cy = 140;
+        const radius = 140;
+        const startAngle = bmiToAngle(startBMI);
+        const endAngle = bmiToAngle(endBMI);
+        const start = polarPoint(cx, cy, radius, endAngle);
+        const end = polarPoint(cx, cy, radius, startAngle);
+        const largeArcFlag = endAngle - startAngle > 180 ? 1 : 0;
+
+        return `M${cx} ${cy} L${start.x.toFixed(1)} ${start.y.toFixed(1)} A${radius} ${radius} 0 ${largeArcFlag} 0 ${end.x.toFixed(1)} ${end.y.toFixed(1)} Z`;
+      }
+
+      function setBoundaryLabel(id, bmi, text) {
+        const point = polarPoint(140, 140, 116, bmiToAngle(bmi));
+        const label = $(id);
+
+        label.textContent = text;
+        label.setAttribute("x", point.x.toFixed(1));
+        label.setAttribute("y", (point.y + 4).toFixed(1));
+        label.setAttribute("text-anchor", "middle");
+        label.setAttribute("font-size", "12");
+      }
+
+      function renderGaugeZones() {
+        $("zone-underweight").setAttribute("d", describeGaugeSegment(10, 18.5));
+        $("zone-normal").setAttribute("d", describeGaugeSegment(18.5, 25));
+        $("zone-overweight").setAttribute("d", describeGaugeSegment(25, 30));
+        $("zone-obesity").setAttribute("d", describeGaugeSegment(30, 40));
+
+        // Labels are mathematically anchored to the zone boundaries.
+        setBoundaryLabel("label-18-5", 18.5, "18.5");
+        setBoundaryLabel("label-25", 25, "25");
+        setBoundaryLabel("label-30", 30, "30");
+      }
+
+      function renderGauge(bmi) {
+        const clamped = Math.max(GAUGE_MIN_BMI, Math.min(GAUGE_MAX_BMI, bmi));
+
+        // The reference needle starts pointing left (0deg).
+        // BMI 10 = 0deg, BMI 25 = 90deg, BMI 40 = 180deg.
+        const rotation =
+          ((clamped - GAUGE_MIN_BMI) / (GAUGE_MAX_BMI - GAUGE_MIN_BMI)) * 180;
+
+        const arrow = $("bmi-arrow");
+        if (!arrow) return;
+
+        arrow.style.transition = "none";
+        arrow.setAttribute("transform", `rotate(0 140 140)`);
+
+        void arrow.getBoundingClientRect();
+
+        arrow.style.transition =
+          "transform 1s cubic-bezier(0.175, 0.885, 0.32, 1.275)";
+        arrow.setAttribute("transform", `rotate(${rotation} 140 140)`);
+      }
+
+      renderGaugeZones();
+
+      let currentState = "form"; // form | loading | result
+
+      const genderOptionPria = $("gender-option-pria");
+      const genderOptionWanita = $("gender-option-wanita");
+      const formSection = $("form-section");
+      const resultHeader = $("result-header");
+      const resultSummary = $("result-summary");
+      const resultDivider = $("result-divider");
+      const resultMain = $("result-main");
+
+      function updateGenderUI(gender) {
+        const isPria = gender === "pria";
+        genderOptionPria.classList.toggle("selected", isPria);
+        genderOptionWanita.classList.toggle("selected", !isPria);
+
+        $("gender-option-pria-icon").setAttribute("stroke", isPria ? "#FF3B14" : "#555");
+        $("gender-option-wanita-icon").setAttribute("stroke", !isPria ? "#FF3B14" : "#555");
+      }
+
+      function selectGender(gender) {
+        inputGenderPria.checked = gender === "pria";
+        inputGenderWanita.checked = gender === "wanita";
+        updateGenderUI(gender);
+      }
+
+      genderOptionPria.addEventListener("click", () => selectGender("pria"));
+      genderOptionWanita.addEventListener("click", () => selectGender("wanita"));
+      updateGenderUI("pria");
+
+      function setState(state) {
+        currentState = state;
+        const isForm = state === "form";
+        const isLoading = state === "loading";
+        const isResult = state === "result";
+
+        formSection.classList.toggle("hidden", !isForm);
+        loadingSpinner.classList.toggle("hidden", !isLoading);
+        loadingSpinner.classList.toggle("flex", isLoading);
+        resultHeader.classList.toggle("hidden", !isResult);
+        resultSummary.classList.toggle("hidden", !isResult);
+        resultDivider.classList.toggle("hidden", !isResult);
+        resultMain.classList.toggle("hidden", !isResult);
+
+        btnAction.classList.toggle("hidden", isResult);
+        btnAction.disabled = isLoading;
+
+        if (isForm) {
+          btnAction.className =
+            "w-[280px] h-[41px] gradient-btn rounded-[7.5px] shadow-btn flex items-center justify-center cursor-pointer";
+          btnLabel.textContent = "Hitung IMT";
+        } else if (isResult) {
+          btnLabel.textContent = "Hitung IMT Lagi";
+        }
+      }
+
+      function hitungIMT() {
+        if (currentState === "result") {
+          resetForm();
+          return;
+        }
+
+        const berat = parseFloat(inputBerat.value);
+        const tinggi = parseFloat(inputTinggi.value);
+        const usia = parseInt(inputUsia.value);
+        const gender = inputGenderPria.checked ? "pria" : "wanita";
+
+        if (
+          !berat || !tinggi || !usia ||
+          berat <= 0 || tinggi <= 0 || usia <= 0
+        ) {
+          alert("Mohon isi semua field dengan benar.");
+          return;
+        }
+
+        setState("loading");
+        setTimeout(() => calculateAndShow(berat, tinggi, usia, gender), 1000);
+      }
+
+      function calculateAndShow(berat, tinggi, usia, gender) {
+        const tinggiMeter = tinggi / 100;
+        const imt = berat / (tinggiMeter * tinggiMeter);
+        const imtStr = imt.toFixed(1).replace(".", ",");
+        const kategori = getBMICategory(imt);
+        const colors = CATEGORY_COLORS[kategori];
+
+        $("result-weight").textContent = `${formatNumber(berat, 0)} kg`;
+        $("result-height").textContent = `${formatNumber(tinggi, 0)} cm`;
+        $("result-age").textContent = `${formatNumber(usia, 0)} Thn`;
+
+        $("result-gender-label").textContent = gender === "pria" ? "Laki-laki" : "Perempuan";
+        $("result-gender-icon").setAttribute("stroke", gender === "pria" ? "#555" : "#555");
+        $("result-gender-icon").setAttribute("data-gender", gender);
+
+        $("imt-value-chart").textContent = imtStr;
+        $("imt-value-chart").setAttribute("fill", colors.text);
+        renderGauge(imt);
+
+        const tag = $("imt-tag");
+        tag.style.borderColor = colors.indicator;
+        $("imt-tag-text").textContent = kategori === "Normal (Ideal)" ? "Normal" : kategori;
+        $("imt-tag-text").style.color = colors.text;
+        $("imt-tag-check").style.backgroundColor = colors.indicator;
+
+        $("imt-description").textContent = DESCRIPTIONS[kategori];
+
+        const idealWeight = getIdealWeight(tinggi, gender);
+        if (typeof idealWeight === "object") {
+          $("berat-ideal").textContent =
+            idealWeight.min.toFixed(1).replace(".", ",") +
+            " - " +
+            idealWeight.max.toFixed(1).replace(".", ",") + " kg";
+        } else {
+          const min = (idealWeight - 2).toFixed(1).replace(".", ",");
+          const max = (idealWeight + 2).toFixed(1).replace(".", ",");
+          $("berat-ideal").textContent = min + " - " + max + " kg";
+        }
+
+        const calories = getDailyCalories(usia, gender);
+        $("kalori-harian").textContent =
+          "± " + calories.toLocaleString("id-ID") + " kkal";
+
+        resultMain.classList.remove("fade-in-up");
+        void resultMain.offsetWidth;
+        resultMain.classList.add("fade-in-up");
+        setState("result");
+      }
+
+      function formatNumber(value, decimals) {
+        return Number(value).toLocaleString("id-ID", {
+          minimumFractionDigits: decimals,
+          maximumFractionDigits: decimals,
+        });
+      }
+
+      function resetForm() {
+        inputBerat.value = "";
+        inputTinggi.value = "167";
+        inputUsia.value = "22";
+        selectGender("pria");
+        setState("form");
+        inputBerat.focus();
+      }
+
+      btnAction.addEventListener("click", hitungIMT);
+
+      // Initial state
+      setState("form");
+      </script>
+  </body>
+</html>

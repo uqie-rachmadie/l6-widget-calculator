@@ -167,7 +167,7 @@
           from 90deg at 50% 100%,
           #0a92fc 180deg 231deg,
           /* Blue: Underweight (BMI 10-18.5) */ #4de065 231deg 270deg,
-          /* Green: Normal (Ideal) (BMI 18.5-25) */ #fbc723 270deg 300deg,
+          /* Green: Normal (BMI 18.5-25) */ #fbc723 270deg 300deg,
           /* Yellow: Overweight (BMI 25-30) */ #f91114 300deg 360deg
             /* Red: Obesitas (BMI 30-40) */
         );
@@ -293,17 +293,18 @@
                       fill="none"
                       xmlns="http://www.w3.org/2000/svg"
                       aria-hidden="true"
+                      style="color: #ff3b14"
                     >
                       <circle
                         cx="14"
                         cy="14"
                         r="6"
-                        stroke="#FF3B14"
+                        stroke="currentColor"
                         stroke-width="2.3"
                       />
                       <path
                         d="M18.5 9.5L25 3M25 3H19.8M25 3V8.2M14 20V29"
-                        stroke="#FF3B14"
+                        stroke="currentColor"
                         stroke-width="2.3"
                         stroke-linecap="round"
                         stroke-linejoin="round"
@@ -324,17 +325,18 @@
                       fill="none"
                       xmlns="http://www.w3.org/2000/svg"
                       aria-hidden="true"
+                      style="color: #555"
                     >
                       <circle
                         cx="16"
                         cy="10"
                         r="6"
-                        stroke="#555"
+                        stroke="currentColor"
                         stroke-width="2.3"
                       />
                       <path
                         d="M16 16V28M11 23H21"
-                        stroke="#555"
+                        stroke="currentColor"
                         stroke-width="2.3"
                         stroke-linecap="round"
                       />
@@ -436,37 +438,6 @@
                   </div>
                 </fieldset>
               </div>
-
-              <!--<fieldset class="flex flex-col flex-1 min-w-0">
-                <legend
-                  class="text-xs font-medium text-ink px-0 py-1 whitespace-nowrap"
-                >
-                  Jenis Kelamin
-                </legend>
-                <div class="input-field flex items-center gap-3 h-[32px]">
-                  <label class="flex items-center gap-1 cursor-pointer">
-                    <input
-                      type="radio"
-                      name="gender"
-                      id="gender-pria"
-                      value="pria"
-                      checked
-                      class="w-4 h-4 accent-orange"
-                    />
-                    <span class="text-sm text-ink">Pria</span>
-                  </label>
-                  <label class="flex items-center gap-1 cursor-pointer">
-                    <input
-                      type="radio"
-                      name="gender"
-                      id="gender-wanita"
-                      value="wanita"
-                      class="w-4 h-4 accent-orange"
-                    />
-                    <span class="text-sm text-ink">Wanita</span>
-                  </label>
-                </div>
-              </fieldset>-->
             </form>
 
             <!-- Button -->
@@ -515,7 +486,7 @@
             <!-- Result Card (hidden by default) -->
             <article
               id="result-card"
-              class="w-[280px] bg-soft rounded-xl gradient-border p-3 pb-2.5 flex-col items-center gap-4 flex"
+              class="hidden w-[280px] bg-soft rounded-xl gradient-border p-3 pb-2.5 flex-col items-center gap-4"
             >
               <!--Result header -->
               <header class="flex items-center justify-between w-full">
@@ -532,7 +503,7 @@
                 </div>
 
                 <div
-                  class="px-4 py-2 border rounded-lg flex items-center gap-2 bg-white w-fit"
+                  class="px-3 py-2 border rounded-lg flex items-center gap-2 bg-white w-fit"
                 >
                   <img
                     src="male-icon.svg"
@@ -540,7 +511,7 @@
                     class="w-4 h-4 fill-defaultgray"
                     aria-hidden="true"
                   />
-                  <p id="#result-gender-value" class="text-xs text-defaultgray">
+                  <p id="result-gender-value" class="text-xs text-defaultgray">
                     wanita
                   </p>
                 </div>
@@ -807,7 +778,7 @@
                 >
                   <div class="flex items-center gap-1">
                     <div
-                      class="w-7 h-7 flex items-center justify-center bg-primary50 rounded-[5.6px]"
+                      class="w-7 h-7 flex items-center justify-center bg-[#FFF0E6] rounded-[5.6px]"
                     >
                       <img
                         src="flame-icon.svg"
@@ -850,12 +821,51 @@
       const inputUsia = $("input-usia");
       const inputGenderPria = $("gender-pria");
       const inputGenderWanita = $("gender-wanita");
+      const genderOptionPria = $("gender-option-pria");
+      const genderOptionWanita = $("gender-option-wanita");
+      const resultGenderValue = $("result-gender-value");
       const btnAction = $("btn-action");
       const btnLabel = $("btn-label");
       const loadingSpinner = $("loading-spinner");
       const resultCard = $("result-card");
       const bottomBanner = $("bottom-banner");
       const inputFields = document.querySelectorAll(".input-field");
+
+      // Gender selector functionality
+      function selectGender(gender) {
+        const isPria = gender === "pria";
+        inputGenderPria.checked = isPria;
+        inputGenderWanita.checked = !isPria;
+
+        genderOptionPria.classList.toggle("selected", isPria);
+        genderOptionWanita.classList.toggle("selected", !isPria);
+
+        // Update SVG stroke colors using currentColor
+        const activeColor = "#FF3B14";
+        const inactiveColor = "#555";
+
+        // Update Pria icon
+        const priaIcon = genderOptionPria.querySelector("svg");
+        if (priaIcon) {
+          priaIcon.style.color = isPria ? activeColor : inactiveColor;
+        }
+
+        // Update Wanita icon
+        const wanitaIcon = genderOptionWanita.querySelector("svg");
+        if (wanitaIcon) {
+          wanitaIcon.style.color = !isPria ? activeColor : inactiveColor;
+        }
+
+        // Update result gender display
+        if (resultGenderValue) {
+          resultGenderValue.textContent = isPria ? "Laki-laki" : "Perempuan";
+        }
+      }
+
+      genderOptionPria.addEventListener("click", () => selectGender("pria"));
+      genderOptionWanita.addEventListener("click", () =>
+        selectGender("wanita"),
+      );
 
       const CATEGORY_COLORS = {
         Underweight: {
@@ -864,7 +874,7 @@
           border: "border-blueresult",
           tagText: "text-blueresult",
         },
-        "Normal (Ideal)": {
+        Normal: {
           indicator: "#148440",
           text: "#148440",
           border: "border-greenresult",
@@ -887,8 +897,7 @@
       const DESCRIPTIONS = {
         Underweight:
           "Berat badan Anda kurang. Perlu peningkatan asupan gizi seimbang.",
-        "Normal (Ideal)":
-          "Berat badan Anda Ideal. Pertahankan pola hidup sehat!",
+        Normal: "Berat badan Anda Ideal. Pertahankan pola hidup sehat!",
         Overweight:
           "Berat badan Anda berlebih. Perhatikan pola makan dan rutin berolahraga.",
         Obesitas:
@@ -996,7 +1005,7 @@
       // Get BMI category per WHO standard
       function getBMICategory(imt) {
         if (imt < 18.5) return "Underweight";
-        if (imt < 25) return "Normal (Ideal)";
+        if (imt < 25) return "Normal";
         if (imt < 30) return "Overweight";
         return "Obesitas";
       }
@@ -1213,7 +1222,7 @@
         inputBerat.value = "";
         inputTinggi.value = "";
         inputUsia.value = "";
-        inputGenderPria.checked = true;
+        selectGender("pria"); // Reset to pria with visual update
         setState("form");
         inputBerat.focus();
       }
