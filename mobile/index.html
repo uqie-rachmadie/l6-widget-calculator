@@ -652,7 +652,6 @@
         resultDivider.classList.toggle("hidden", !isResult);
         resultMain.classList.toggle("hidden", !isResult);
 
-        btnAction.classList.toggle("hidden", isResult);
         btnAction.disabled = isLoading;
 
         if (isForm) {
@@ -660,6 +659,8 @@
             "w-[280px] h-[41px] gradient-btn rounded-[7.5px] shadow-btn flex items-center justify-center cursor-pointer";
           btnLabel.textContent = "Hitung IMT";
         } else if (isResult) {
+          btnAction.className =
+            "w-[280px] h-[41px] gradient-btn-reverse rounded-[7.5px] shadow-btn flex items-center justify-center cursor-pointer";
           btnLabel.textContent = "Hitung IMT Lagi";
         }
       }

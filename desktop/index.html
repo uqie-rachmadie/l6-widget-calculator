@@ -256,189 +256,193 @@
 
           <!-- Shared UI -->
           <div class="w-full flex flex-col items-center gap-4">
+            <!-- Form Container (Title + Form) -->
+            <div id="form-container" class="contents">
             <!-- Title -->
             <div class="flex items-center gap-[5px] self-start">
               <img
                 src="calculator-icon.svg"
-                alt=""
-                class="w-4 h-4"
-                aria-hidden="true"
-              />
-              <h2 class="font-bold text-sm text-ink whitespace-nowrap">
-                Hitung IMT (Index Massa Tubuh)
-              </h2>
-            </div>
+                  alt=""
+                  class="w-4 h-4"
+                  aria-hidden="true"
+                />
+                <h2 class="font-bold text-sm text-ink whitespace-nowrap">
+                  Hitung IMT (Index Massa Tubuh)
+                </h2>
+              </div>
 
-            <!-- Form Inputs -->
-            <form
-              id="imt-form"
-              class="space-y-2 w-full"
-              onSubmit="return false;"
-            >
-              <div>
-                <!-- Gender image selector -->
-                <div
-                  class="w-full h-[32px] rounded-[40px] bg-[#FFF0E6] p-1 flex gap-1"
-                >
-                  <button
-                    id="gender-option-pria"
-                    type="button"
-                    class="gender-option selected flex-1 rounded-[36px] flex items-center justify-center gap-2 cursor-pointer"
+              <!-- Form Inputs -->
+              <form
+                id="imt-form"
+                class="space-y-2 w-full"
+                onSubmit="return false;"
+              >
+                <div>
+                  <!-- Gender image selector -->
+                  <div
+                    class="w-full h-[32px] rounded-[40px] bg-[#FFF0E6] p-1 flex gap-1"
                   >
-                    <svg
-                      id="gender-option-pria-icon"
-                      width="12"
-                      height="12"
-                      viewBox="0 0 32 32"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                      aria-hidden="true"
-                      style="color: #ff3b14"
+                    <button
+                      id="gender-option-pria"
+                      type="button"
+                      class="gender-option selected flex-1 rounded-[36px] flex items-center justify-center gap-2 cursor-pointer"
                     >
-                      <circle
-                        cx="14"
-                        cy="14"
-                        r="6"
-                        stroke="currentColor"
-                        stroke-width="2.3"
-                      />
-                      <path
-                        d="M18.5 9.5L25 3M25 3H19.8M25 3V8.2M14 20V29"
-                        stroke="currentColor"
-                        stroke-width="2.3"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                      />
-                    </svg>
-                    <span class="text-xs font-medium">Laki-laki</span>
-                  </button>
-                  <button
-                    id="gender-option-wanita"
-                    type="button"
-                    class="gender-option flex-1 rounded-[36px] flex items-center justify-center gap-2 cursor-pointer"
-                  >
-                    <svg
-                      id="gender-option-wanita-icon"
-                      width="12"
-                      height="12"
-                      viewBox="0 0 32 32"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                      aria-hidden="true"
-                      style="color: #555"
+                      <svg
+                        id="gender-option-pria-icon"
+                        width="12"
+                        height="12"
+                        viewBox="0 0 32 32"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                        aria-hidden="true"
+                        style="color: #ff3b14"
+                      >
+                        <circle
+                          cx="14"
+                          cy="14"
+                          r="6"
+                          stroke="currentColor"
+                          stroke-width="2.3"
+                        />
+                        <path
+                          d="M18.5 9.5L25 3M25 3H19.8M25 3V8.2M14 20V29"
+                          stroke="currentColor"
+                          stroke-width="2.3"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        />
+                      </svg>
+                      <span class="text-xs font-medium">Laki-laki</span>
+                    </button>
+                    <button
+                      id="gender-option-wanita"
+                      type="button"
+                      class="gender-option flex-1 rounded-[36px] flex items-center justify-center gap-2 cursor-pointer"
                     >
-                      <circle
-                        cx="16"
-                        cy="10"
-                        r="6"
-                        stroke="currentColor"
-                        stroke-width="2.3"
-                      />
-                      <path
-                        d="M16 16V28M11 23H21"
-                        stroke="currentColor"
-                        stroke-width="2.3"
-                        stroke-linecap="round"
-                      />
-                    </svg>
-                    <span class="text-xs font-medium">Perempuan</span>
-                  </button>
+                      <svg
+                        id="gender-option-wanita-icon"
+                        width="12"
+                        height="12"
+                        viewBox="0 0 32 32"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                        aria-hidden="true"
+                        style="color: #555"
+                      >
+                        <circle
+                          cx="16"
+                          cy="10"
+                          r="6"
+                          stroke="currentColor"
+                          stroke-width="2.3"
+                        />
+                        <path
+                          d="M16 16V28M11 23H21"
+                          stroke="currentColor"
+                          stroke-width="2.3"
+                          stroke-linecap="round"
+                        />
+                      </svg>
+                      <span class="text-xs font-medium">Perempuan</span>
+                    </button>
+                  </div>
+
+                  <!-- Hidden radios keep existing calculation logic/accessibility -->
+                  <input
+                    type="radio"
+                    name="gender"
+                    id="gender-pria"
+                    value="pria"
+                    checked
+                    class="hidden"
+                  />
+                  <input
+                    type="radio"
+                    name="gender"
+                    id="gender-wanita"
+                    value="wanita"
+                    class="hidden"
+                  />
                 </div>
 
-                <!-- Hidden radios keep existing calculation logic/accessibility -->
-                <input
-                  type="radio"
-                  name="gender"
-                  id="gender-pria"
-                  value="pria"
-                  checked
-                  class="hidden"
-                />
-                <input
-                  type="radio"
-                  name="gender"
-                  id="gender-wanita"
-                  value="wanita"
-                  class="hidden"
-                />
-              </div>
-
-              <div class="flex items-center gap-2 w-full">
-                <fieldset class="flex flex-col flex-1 min-w-0">
-                  <legend
-                    class="text-xs font-medium text-ink px-0 py-1 whitespace-nowrap"
-                  >
-                    Berat badan
-                  </legend>
-                  <div
-                    class="input-field flex items-center justify-between h-[36px] px-2 bg-white border border-orange/30 rounded-md"
-                  >
-                    <input
-                      type="number"
-                      id="input-berat"
-                      placeholder="0"
-                      min="1"
-                      max="300"
-                      required
-                      class="w-full text-sm text-ink placeholder-defaultgray outline-none bg-transparent [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                    />
-                    <span class="text-xs text-defaultgray shrink-0 ml-1"
-                      >kg</span
+                <div class="flex items-center gap-2 w-full">
+                  <fieldset class="flex flex-col flex-1 min-w-0">
+                    <legend
+                      class="text-xs font-medium text-ink px-0 py-1 whitespace-nowrap"
                     >
-                  </div>
-                </fieldset>
-
-                <fieldset class="flex flex-col flex-1 min-w-0">
-                  <legend
-                    class="text-xs font-medium text-ink px-0 py-1 whitespace-nowrap"
-                  >
-                    Tinggi badan
-                  </legend>
-                  <div
-                    class="input-field flex items-center justify-between h-[36px] px-2 bg-white border border-orange/30 rounded-md"
-                  >
-                    <input
-                      type="number"
-                      id="input-tinggi"
-                      value="167"
-                      placeholder="0"
-                      min="1"
-                      max="300"
-                      required
-                      class="w-full text-sm text-ink placeholder-defaultgray outline-none bg-transparent [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                    />
-                    <span class="text-xs text-defaultgray shrink-0 ml-1"
-                      >cm</span
+                      Berat badan
+                    </legend>
+                    <div
+                      class="input-field flex items-center justify-between h-[36px] px-2 bg-white border border-orange/30 rounded-md"
                     >
-                  </div>
-                </fieldset>
+                      <input
+                        type="number"
+                        id="input-berat"
+                        placeholder="0"
+                        min="1"
+                        max="300"
+                        required
+                        class="w-full text-sm text-ink placeholder-defaultgray outline-none bg-transparent [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                      />
+                      <span class="text-xs text-defaultgray shrink-0 ml-1"
+                        >kg</span
+                      >
+                    </div>
+                  </fieldset>
 
-                <fieldset class="flex flex-col flex-1 min-w-0">
-                  <legend
-                    class="text-xs font-medium text-ink px-0 py-1 whitespace-nowrap"
-                  >
-                    Usia
-                  </legend>
-                  <div
-                    class="input-field flex items-center justify-between h-[36px] px-2 bg-white border border-orange/30 rounded-md"
-                  >
-                    <input
-                      type="number"
-                      id="input-usia"
-                      value="22"
-                      placeholder="0"
-                      min="1"
-                      max="120"
-                      required
-                      class="w-full text-sm text-ink placeholder-defaultgray outline-none bg-transparent [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                    />
-                    <span class="text-xs text-defaultgray shrink-0 ml-1"
-                      >Tahun</span
+                  <fieldset class="flex flex-col flex-1 min-w-0">
+                    <legend
+                      class="text-xs font-medium text-ink px-0 py-1 whitespace-nowrap"
                     >
-                  </div>
-                </fieldset>
-              </div>
-            </form>
+                      Tinggi badan
+                    </legend>
+                    <div
+                      class="input-field flex items-center justify-between h-[36px] px-2 bg-white border border-orange/30 rounded-md"
+                    >
+                      <input
+                        type="number"
+                        id="input-tinggi"
+                        value="167"
+                        placeholder="0"
+                        min="1"
+                        max="300"
+                        required
+                        class="w-full text-sm text-ink placeholder-defaultgray outline-none bg-transparent [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                      />
+                      <span class="text-xs text-defaultgray shrink-0 ml-1"
+                        >cm</span
+                      >
+                    </div>
+                  </fieldset>
+
+                  <fieldset class="flex flex-col flex-1 min-w-0">
+                    <legend
+                      class="text-xs font-medium text-ink px-0 py-1 whitespace-nowrap"
+                    >
+                      Usia
+                    </legend>
+                    <div
+                      class="input-field flex items-center justify-between h-[36px] px-2 bg-white border border-orange/30 rounded-md"
+                    >
+                      <input
+                        type="number"
+                        id="input-usia"
+                        value="22"
+                        placeholder="0"
+                        min="1"
+                        max="120"
+                        required
+                        class="w-full text-sm text-ink placeholder-defaultgray outline-none bg-transparent [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                      />
+                      <span class="text-xs text-defaultgray shrink-0 ml-1"
+                        >Tahun</span
+                      >
+                    </div>
+                  </fieldset>
+                </div>
+              </form>
+            </div>
+            <!-- End Form Container -->
 
             <!-- Button -->
             <button
@@ -829,6 +833,7 @@
       const loadingSpinner = $("loading-spinner");
       const resultCard = $("result-card");
       const bottomBanner = $("bottom-banner");
+      const formContainer = $("form-container");
       const inputFields = document.querySelectorAll(".input-field");
 
       // Gender selector functionality
@@ -1124,6 +1129,9 @@
           btnLabel.textContent = "Hitung IMT Lagi";
         }
         btnAction.disabled = isLoading;
+
+        // Hide form container (title + inputs) when result is shown
+        formContainer.classList.toggle("hidden", isResult);
 
         // Loading spinner
         loadingSpinner.classList.toggle("hidden", !isLoading);
