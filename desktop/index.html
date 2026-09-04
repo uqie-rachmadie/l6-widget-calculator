@@ -1181,6 +1181,12 @@
         const kategori = getBMICategory(imt);
         const colors = CATEGORY_COLORS[kategori];
 
+        // Result summary
+        $("result-weight").textContent = berat + " kg";
+        $("result-height").textContent = tinggi + " cm";
+        $("result-age").textContent = usia + " Thn";
+        resultGenderValue.textContent = gender === "pria" ? "Laki-laki" : "Perempuan";
+
         // IMT value and gauge
         $("imt-value-chart").textContent = imtStr;
         $("imt-value-chart").style.color = colors.text;
